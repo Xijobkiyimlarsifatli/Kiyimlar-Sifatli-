@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Bizning suhbat</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif;background:#f5f2f7;color:#24202a}
+.app{max-width:760px;margin:auto;height:100vh;display:flex;flex-direction:column;background:#fff;box-shadow:0 0 30px #00000010}
+header{padding:18px 20px;border-bottom:1px solid #eee;background:#fff}
+.title{font-size:20px;font-weight:750}.sub{font-size:12px;color:#8b8492;margin-top:3px}
+#messages{flex:1;overflow:auto;padding:22px 16px;background:linear-gradient(180deg,#fbf9fc,#f6f3f8)}
+.msg{display:flex;margin:8px 0}.msg.mine{justify-content:flex-end}.bubble{max-width:78%;padding:10px 13px;border-radius:18px 18px 18px 5px;background:#fff;box-shadow:0 2px 8px #0000000b}
+.mine .bubble{border-radius:18px 18px 5px 18px;background:#27232d;color:#fff}.name{font-size:11px;font-weight:700;color:#8d748f;margin-bottom:4px}.mine .name{color:#d7c8dc}.time{font-size:10px;opacity:.55;text-align:right;margin-top:4px}
+.photo{display:block;max-width:100%;max-height:330px;border-radius:13px;margin-top:5px}
+.empty{text-align:center;color:#999;padding:45px 20px;font-size:14px}
+form{display:flex;gap:8px;padding:10px 12px calc(10px + env(safe-area-inset-bottom));border-top:1px solid #eee;background:#fff}
+input[type=text]{flex:1;border:1px solid #e4e0e7;border-radius:16px;padding:12px 14px;outline:none;font-size:15px}
+button{border:0;border-radius:15px;background:#27232d;color:#fff;padding:0 16px;font-weight:700;cursor:pointer}
+.icon{width:44px;padding:0;font-size:18px;background:#eeeaf0;color:#27232d}
+#file{display:none}
+#setup{position:fixed;inset:0;background:#0008;display:flex;align-items:center;justify-content:center;padding:20px;z-index:5}
+.card{width:min(420px,100%);background:#fff;border-radius:24px;padding:25px;box-shadow:0 20px 60px #0004}
+.card h2{margin:0 0 7px}.card p{color:#777;font-size:14px;line-height:1.5}
+.card input{width:100%;border:1px solid #ddd;border-radius:13px;padding:13px;font-size:15px;margin:8px 0 12px}
+.card button{height:45px;width:100%}
+#status{font-size:11px;color:#9a919f;text-align:center;padding:3px}
+</style>
+</head>
+<body>
+<div class="app">
+<header><div class="title">Bizning suhbat</div><div class="sub" id="who">Ulanish kutilmoqda...</div></header>
+<div id="messages"><div class="empty">Suhbatni boshlash uchun xabar yozing.</div></div>
+<div id="status"></div>
+<form id="form">
+<label class="icon button" title="Rasm tanlash"><span>＋</span><input id="file" type="file" accept="image/*"></label>
+<input id="text" type="text" placeholder="Xabar yozing..." autocomplete="off">
+<button>Yuborish</button>
+</form>
+</div>
+
+<div id="setup">
+<div class="card">
+<h2>Avval ismingizni kiriting</h2>
+<p>Bu ism suhbatda ko‘rinadi. Keyin xohlasangiz brauzer ma’lumotlarini tozalab, ismni o‘zgartirishingiz mumkin.</p>
+<input id="name" maxlength="30" placeholder="Masalan: Murod">
+<button id="start">Suhbatga kirish</button>
+</div>
+</div>
+
+<script type="module">
+import {initializeApp} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+import {getDatabase, ref, push, onChildAdded, query, limitToLast} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-database.js";
+
+/* ===== FIREBASE SOZLAMASI =====
+   1) Firebase Console'da loyiha yarating.
+   2) Web app qo'shing.
+   3) Quyidagi qiymatlarni o'zingiznikiga almashtiring.
+*/
+const firebaseConfig = {
+  apiKey: "AIzaSyAV7jDmCi89XU3-xLpk_WRU_mXbFcAK_qY",
+  authDomain: "kiyimlar-olamiz-uz.firebaseapp.com",
+  databaseURL: "https://kiyimlar-olamiz-uz-default-rtdb.firebaseio.com",
+  projectId: "kiyimlar-olamiz-uz",
+  storageBucket: "kiyimlar-olamiz-uz.firebasestorage.app",
+  messagingSenderId: "721401033200",
+  appId: "1:721401033200:web:d543e11684bfdb39fa2d35"
+};
+
+const app=initializeApp(firebaseConfig);
+const db=getDatabase(app);
+const roomId="bizning-suhbat-2026"; // ikkovingiz bir xil xona
+let me=localStorage.getItem("chatName")||"";
+const messages=document.querySelector("#messages"), form=document.querySelector("#form"), text=document.querySelector("#text");
+const setup=document.querySelector("#setup"), nameInput=document.querySelector("#name"), who=document.querySelector("#who"), status=document.querySelector("#status");
+
+function esc(s){return s.replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));}
+function time(t){return new Date(t).toLocaleTimeString("uz-UZ",{hour:"2-digit",minute:"2-digit"});}
+function render(m){
+  const empty=messages.querySelector(".empty"); if(empty) empty.remove();
+  const mine=m.name===me;
+  const d=document.createElement("div"); d.className="msg "+(mine?"mine":"");
+  let media=m.image?`<img class="photo" src="${m.image}" alt="Rasm">`:"";
+  d.innerHTML=`<div class="bubble"><div class="name">${esc(m.name)}</div>${m.text?`<div>${esc(m.text)}</div>`:""}${media}<div class="time">${time(m.createdAt)}</div></div>`;
+  messages.appendChild(d); messages.scrollTop=messages.scrollHeight;
+}
+function connect(){
+  who.textContent=`Siz: ${me}`;
+  setup.style.display="none";
+  const q=query(ref(db,"rooms/"+roomId+"/messages"),limitToLast(100));
+  onChildAdded(q,s=>render(s.val()),e=>{status.textContent="Ulanishda xatolik: "+e.message});
+}
+document.querySelector("#start").onclick=()=>{
+  const n=nameInput.value.trim(); if(!n)return;
+  me=n; localStorage.setItem("chatName",me); connect();
+};
+if(me) connect();
+
+async function imageData(file){
+  const img=new Image(), url=URL.createObjectURL(file);
+  await new Promise((res,rej)=>{img.onload=res;img.onerror=rej;img.src=url});
+  const max=900, scale=Math.min(1,max/Math.max(img.width,img.height));
+  const c=document.createElement("canvas"); c.width=Math.round(img.width*scale); c.height=Math.round(img.height*scale);
+  c.getContext("2d").drawImage(img,0,0,c.width,c.height); URL.revokeObjectURL(url);
+  return c.toDataURL("image/jpeg",.78);
+}
+async function send(textValue,image){
+  if(!me)return;
+  await push(ref(db,"rooms/"+roomId+"/messages"),{name:me,text:textValue||"",image:image||"",createdAt:Date.now()});
+}
+form.onsubmit=async e=>{
+  e.preventDefault(); const v=text.value.trim(); if(!v)return;
+  text.value=""; status.textContent="Yuborilmoqda...";
+  try{await send(v,"");status.textContent=""}catch(err){status.textContent="Xatolik: "+err.message}
+};
+document.querySelector("#file").onchange=async e=>{
+  const f=e.target.files[0]; if(!f)return;
+  status.textContent="Rasm tayyorlanmoqda...";
+  try{const data=await imageData(f);await send("",data);status.textContent=""}
+  catch(err){status.textContent="Rasm yuborilmadi. Kichikroq rasm tanlang."}
+  e.target.value="";
+};
+</script>
+</body>
+</html>
