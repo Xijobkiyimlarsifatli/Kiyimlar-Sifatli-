@@ -1,1031 +1,428 @@
 <!DOCTYPE html>
 <html lang="uz">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Toper.uz - Chat</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        html, body {
-            width: 100%;
-            height: 100%;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', sans-serif;
-            background: #fff;
-            color: #1a1a1a;
-            -webkit-font-smoothing: antialiased;
-            -webkit-touch-callout: none;
-        }
-
-        body {
-            position: fixed;
-            overflow: hidden;
-            padding-top: max(env(safe-area-inset-top), 0px);
-            padding-bottom: max(env(safe-area-inset-bottom), 0px);
-        }
-
-        /* ========== LOGIN SCREEN ========== */
-        #loginScreen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            padding: 20px;
-            font-size: 16px;
-        }
-
-        .login-container {
-            background: white;
-            border-radius: 20px;
-            padding: 40px 30px;
-            width: 100%;
-            max-width: 350px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
-            text-align: center;
-        }
-
-        .login-logo {
-            font-size: 32px;
-            font-weight: 700;
-            color: #667eea;
-            margin-bottom: 10px;
-        }
-
-        .login-subtitle {
-            color: #999;
-            font-size: 14px;
-            margin-bottom: 30px;
-        }
-
-        .login-form {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .login-step {
-            display: none;
-            animation: fadeIn 0.3s;
-        }
-
-        .login-step.active {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        .login-label {
-            text-align: left;
-            font-size: 14px;
-            color: #666;
-            font-weight: 500;
-            margin-bottom: 8px;
-        }
-
-        #pinInput {
-            width: 100%;
-            padding: 14px;
-            font-size: 32px;
-            text-align: center;
-            border: 2px solid #e0e0e0;
-            border-radius: 12px;
-            letter-spacing: 15px;
-            font-weight: bold;
-            transition: border-color 0.3s;
-        }
-
-        #pinInput:focus {
-            outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
-
-        #usernameInput {
-            width: 100%;
-            padding: 12px 14px;
-            font-size: 16px;
-            border: 2px solid #e0e0e0;
-            border-radius: 12px;
-            transition: border-color 0.3s;
-        }
-
-        #usernameInput:focus {
-            outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
-
-        .login-btn {
-            width: 100%;
-            padding: 14px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            border-radius: 12px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-
-        .login-btn:active {
-            transform: scale(0.98);
-        }
-
-        .login-error {
-            color: #e74c3c;
-            font-size: 13px;
-            margin-top: 10px;
-            min-height: 18px;
-        }
-
-        /* ========== CHAT SCREEN ========== */
-        #chatScreen {
-            display: none;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            background: #fff;
-        }
-
-        #chatScreen.active {
-            display: flex;
-        }
-
-        /* Header */
-        #header {
-            background: white;
-            border-bottom: 1px solid #f0f0f0;
-            padding: 12px 16px;
-            padding-top: max(12px, env(safe-area-inset-top));
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-shrink: 0;
-            min-height: 56px;
-        }
-
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            flex: 1;
-        }
-
-        .header-title {
-            font-weight: 700;
-            font-size: 18px;
-            color: #667eea;
-        }
-
-        .header-status {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 13px;
-            color: #999;
-        }
-
-        .status-dot {
-            width: 8px;
-            height: 8px;
-            background: #31a24c;
-            border-radius: 50%;
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-
-        .header-actions {
-            display: flex;
-            gap: 8px;
-        }
-
-        .logout-btn {
-            background: none;
-            border: none;
-            color: #667eea;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            padding: 6px 12px;
-            border-radius: 6px;
-            transition: background 0.2s;
-        }
-
-        .logout-btn:active {
-            background: #f5f5f5;
-        }
-
-        /* Messages Container */
-        #messagesContainer {
-            flex: 1;
-            overflow-y: auto;
-            overflow-x: hidden;
-            padding: 16px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            -webkit-overflow-scrolling: touch;
-        }
-
-        /* Messages Styling */
-        .message-group {
-            display: flex;
-            margin-bottom: 12px;
-            animation: slideIn 0.3s ease-out;
-        }
-
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .message-group.own {
-            justify-content: flex-end;
-        }
-
-        .message-bubble {
-            max-width: 85%;
-            padding: 10px 14px;
-            border-radius: 18px;
-            word-wrap: break-word;
-            position: relative;
-            display: inline-block;
-        }
-
-        .message-group.own .message-bubble {
-            background: linear-gradient(135deg, #31a24c 0%, #2d8f40 100%);
-            color: white;
-            border-bottom-right-radius: 4px;
-        }
-
-        .message-group.other .message-bubble {
-            background: #f0f0f0;
-            color: #1a1a1a;
-            border-bottom-left-radius: 4px;
-        }
-
-        .message-image {
-            max-width: 100%;
-            max-height: 300px;
-            border-radius: 14px;
-            margin-top: 6px;
-            cursor: pointer;
-            transition: filter 0.2s;
-        }
-
-        .message-image:active {
-            filter: brightness(0.9);
-        }
-
-        .message-info {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-top: 6px;
-            font-size: 12px;
-            opacity: 0.85;
-        }
-
-        .message-group.own .message-info {
-            justify-content: flex-end;
-            color: rgba(255, 255, 255, 0.85);
-        }
-
-        .message-group.other .message-info {
-            color: #999;
-        }
-
-        .delete-btn {
-            background: none;
-            border: none;
-            color: inherit;
-            cursor: pointer;
-            font-size: 12px;
-            padding: 2px 6px;
-            opacity: 0.8;
-            transition: opacity 0.2s;
-            font-weight: 500;
-        }
-
-        .message-group.own .delete-btn {
-            color: rgba(255, 255, 255, 0.9);
-        }
-
-        .delete-btn:active {
-            opacity: 0.6;
-        }
-
-        /* Input Area */
-        #inputArea {
-            background: white;
-            border-top: 1px solid #f0f0f0;
-            padding: 12px 12px;
-            padding-bottom: max(12px, env(safe-area-inset-bottom));
-            display: flex;
-            gap: 8px;
-            flex-shrink: 0;
-            align-items: flex-end;
-        }
-
-        .input-actions {
-            display: flex;
-            gap: 8px;
-            flex-shrink: 0;
-        }
-
-        .action-btn {
-            width: 40px;
-            height: 40px;
-            background: #f0f0f0;
-            border: none;
-            border-radius: 20px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            transition: background 0.2s;
-            flex-shrink: 0;
-        }
-
-        .action-btn:active {
-            background: #e0e0e0;
-        }
-
-        #imageInput {
-            display: none;
-        }
-
-        .input-wrapper {
-            flex: 1;
-            display: flex;
-            align-items: flex-end;
-            gap: 8px;
-            min-height: 40px;
-        }
-
-        #messageInput {
-            flex: 1;
-            padding: 10px 14px;
-            border: 1px solid #e0e0e0;
-            border-radius: 20px;
-            font-size: 16px;
-            font-family: inherit;
-            resize: none;
-            max-height: 100px;
-            overflow-y: auto;
-            -webkit-appearance: none;
-            transition: border-color 0.2s;
-        }
-
-        #messageInput:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-
-        .send-btn {
-            width: 40px;
-            height: 40px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            border-radius: 20px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-            transition: transform 0.2s;
-            flex-shrink: 0;
-        }
-
-        .send-btn:active {
-            transform: scale(0.95);
-        }
-
-        /* Footer */
-        #footer {
-            text-align: center;
-            font-size: 12px;
-            color: #999;
-            padding: 12px;
-            border-top: 1px solid #f0f0f0;
-            padding-bottom: max(12px, env(safe-area-inset-bottom));
-        }
-
-        /* Modal */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            justify-content: center;
-            align-items: center;
-            z-index: 2000;
-            padding: 20px;
-        }
-
-        .modal.active {
-            display: flex;
-        }
-
-        .modal-content {
-            background: white;
-            border-radius: 16px;
-            padding: 24px;
-            max-width: 300px;
-            text-align: center;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-        }
-
-        .modal-title {
-            font-size: 16px;
-            font-weight: 600;
-            margin-bottom: 20px;
-            color: #1a1a1a;
-        }
-
-        .modal-buttons {
-            display: flex;
-            gap: 12px;
-            justify-content: center;
-        }
-
-        .modal-btn {
-            flex: 1;
-            padding: 10px 16px;
-            border: none;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-
-        .modal-btn.cancel {
-            background: #f0f0f0;
-            color: #666;
-        }
-
-        .modal-btn.confirm {
-            background: #e74c3c;
-            color: white;
-        }
-
-        .modal-btn:active {
-            transform: scale(0.95);
-        }
-
-        /* Scrollbar */
-        #messagesContainer::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        #messagesContainer::-webkit-scrollbar-track {
-            background: transparent;
-        }
-
-        #messagesContainer::-webkit-scrollbar-thumb {
-            background: #ddd;
-            border-radius: 3px;
-        }
-
-        /* Utilities */
-        .text-center {
-            text-align: center;
-        }
-
-        .mt-20 {
-            margin-top: 20px;
-        }
-
-        /* Responsive */
-        @media (max-width: 480px) {
-            .login-container {
-                padding: 30px 20px;
-            }
-
-            .message-bubble {
-                max-width: 90%;
-            }
-
-            #messagesContainer {
-                padding: 12px;
-                gap: 6px;
-            }
-
-            #inputArea {
-                padding: 10px;
-            }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Toper.uz — Chat</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial,sans-serif;background:#f4f6fb;color:#172033;height:100vh;overflow:hidden}
+button,input{font:inherit}
+.hidden{display:none!important}
+
+#loginScreen{height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:linear-gradient(135deg,#6c5ce7,#8e7cf5)}
+.loginBox{width:100%;max-width:390px;background:#fff;border-radius:24px;padding:30px 24px;box-shadow:0 18px 50px #0002;text-align:center}
+.logo{width:68px;height:68px;border-radius:20px;background:#6c5ce7;color:#fff;display:grid;place-items:center;font-size:30px;font-weight:800;margin:0 auto 16px}
+.loginBox h1{font-size:28px;margin-bottom:8px}
+.loginBox p{color:#778097;margin-bottom:24px}
+.loginBox input{width:100%;height:52px;border:1px solid #dfe3ec;border-radius:14px;padding:0 16px;outline:none;margin-bottom:12px}
+.loginBox input:focus{border-color:#6c5ce7}
+.primary{width:100%;height:52px;border:0;border-radius:14px;background:#6c5ce7;color:white;font-weight:700;cursor:pointer}
+.error{color:#e5484d;font-size:14px;min-height:20px;margin:4px 0 8px}
+
+#chatScreen{height:100vh;display:flex;flex-direction:column;max-width:900px;margin:auto;background:#fff}
+.header{height:68px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 16px;border-bottom:1px solid #edf0f5;background:#fff}
+.brand{display:flex;align-items:center;gap:11px}
+.brandIcon{width:42px;height:42px;border-radius:13px;background:#6c5ce7;color:#fff;display:grid;place-items:center;font-weight:800}
+.brandText b{display:block;font-size:17px}.brandText span{font-size:12px;color:#8a92a5}
+.logout{border:0;background:#f1f2f7;color:#555e72;border-radius:11px;padding:9px 12px;cursor:pointer}
+.messages{flex:1;overflow-y:auto;padding:18px 14px;background:#f7f8fc}
+.day{text-align:center;color:#8b93a5;font-size:12px;margin:8px 0 16px}
+.msgRow{display:flex;margin-bottom:10px}
+.msgRow.mine{justify-content:flex-end}
+.bubble{max-width:min(78%,520px);padding:10px 12px;border-radius:17px;background:#fff;box-shadow:0 2px 8px #1720330b;position:relative}
+.mine .bubble{background:#6c5ce7;color:#fff;border-bottom-right-radius:5px}
+.other .bubble{border-bottom-left-radius:5px}
+.name{font-size:11px;font-weight:700;color:#6c5ce7;margin-bottom:4px}
+.mine .name{color:#eee}
+.text{white-space:pre-wrap;word-break:break-word;line-height:1.4;font-size:15px}
+.time{font-size:10px;color:#98a0b1;text-align:right;margin-top:4px}
+.mine .time{color:#ddd}
+.photo{display:block;max-width:260px;max-height:320px;border-radius:12px;cursor:pointer;margin-bottom:5px}
+.actions{margin-top:6px;display:flex;justify-content:flex-end}
+.deleteBtn{border:0;background:transparent;color:#8b93a5;font-size:11px;cursor:pointer}
+.mine .deleteBtn{color:#eee}
+.empty{text-align:center;color:#9aa2b3;padding-top:20vh;font-size:14px}
+.composer{flex:none;display:flex;gap:8px;padding:10px 12px calc(10px + env(safe-area-inset-bottom));border-top:1px solid #edf0f5;background:#fff}
+.composer input[type=text]{flex:1;min-width:0;height:46px;border:1px solid #dfe3ec;border-radius:14px;padding:0 14px;outline:none}
+.composer input[type=text]:focus{border-color:#6c5ce7}
+.iconBtn{width:46px;height:46px;border:0;border-radius:14px;background:#f0f1f7;cursor:pointer}
+.send{background:#6c5ce7;color:#fff;font-size:18px}
+.footer{text-align:center;color:#a0a7b6;font-size:11px;padding:0 0 5px;background:#fff}
+
+.modal{position:fixed;inset:0;background:#0009;display:flex;align-items:center;justify-content:center;padding:20px;z-index:20}
+.modalBox{background:#fff;border-radius:18px;padding:22px;max-width:330px;width:100%;text-align:center}
+.modalBox h3{margin-bottom:10px}.modalBox p{color:#70798c;font-size:14px;margin-bottom:18px}
+.modalBtns{display:flex;gap:8px}.modalBtns button{flex:1;height:44px;border:0;border-radius:12px;cursor:pointer}
+.cancel{background:#eef0f5}.danger{background:#e5484d;color:#fff}
+.imageModal img{max-width:95vw;max-height:85vh;border-radius:14px}
+
+@media(max-width:600px){
+ .loginBox{padding:26px 20px;border-radius:20px}
+ .header{height:62px}
+ .bubble{max-width:84%}
+ .photo{max-width:220px}
+}
+</style>
 </head>
 <body>
-    <!-- LOGIN SCREEN -->
-    <div id="loginScreen">
-        <div class="login-container">
-            <div class="login-logo">Toper.uz</div>
-            <div class="login-subtitle">Chat</div>
 
-            <div class="login-form">
-                <!-- PIN Step -->
-                <div id="pinStep" class="login-step active">
-                    <div class="login-label">PIN kodni kiriting</div>
-                    <input 
-                        type="password" 
-                        id="pinInput" 
-                        placeholder="• • • •" 
-                        maxlength="4"
-                        inputmode="numeric"
-                    >
-                    <div id="pinError" class="login-error"></div>
-                    <button id="pinSubmitBtn" class="login-btn">Kiris</button>
-                </div>
+<section id="loginScreen">
+  <div class="loginBox">
+    <div class="logo">T</div>
+    <h1>Toper.uz</h1>
+    <p id="loginText">Maxfiy chatga kirish</p>
 
-                <!-- Username Step -->
-                <div id="usernameStep" class="login-step">
-                    <div class="login-label">Ismingiz kiriting</div>
-                    <input 
-                        type="text" 
-                        id="usernameInput" 
-                        placeholder="Ismingiz..."
-                        maxlength="30"
-                    >
-                    <div id="usernameError" class="login-error"></div>
-                    <button id="usernameSubmitBtn" class="login-btn">Davom etish</button>
-                </div>
-            </div>
-        </div>
+    <div id="pinStep">
+      <input id="pinInput" type="password" inputmode="numeric" maxlength="4" placeholder="4 xonali kod">
+      <div id="pinError" class="error"></div>
+      <button class="primary" id="pinBtn">Kirish</button>
     </div>
 
-    <!-- CHAT SCREEN -->
-    <div id="chatScreen">
-        <div id="header">
-            <div class="header-left">
-                <div class="header-title">Toper.uz</div>
-                <div class="header-status">
-                    <span class="status-dot"></span>
-                    <span>online</span>
-                </div>
-            </div>
-            <div class="header-actions">
-                <button id="logoutBtn" class="logout-btn">Chiqish</button>
-            </div>
-        </div>
-
-        <div id="messagesContainer"></div>
-
-        <div id="inputArea">
-            <div class="input-actions">
-                <button id="imageBtn" class="action-btn" title="Rasm yuborish">📷</button>
-                <input type="file" id="imageInput" accept="image/*" capture="environment">
-            </div>
-            <div class="input-wrapper">
-                <textarea 
-                    id="messageInput" 
-                    placeholder="Xabar yozing..."
-                    rows="1"
-                ></textarea>
-                <button id="sendBtn" class="send-btn" title="Yuborish">▶</button>
-            </div>
-        </div>
-
-        <div id="footer">Murodjon yaratgan ♥</div>
+    <div id="nameStep" class="hidden">
+      <input id="nameInput" type="text" maxlength="30" placeholder="Ismingiz">
+      <div id="nameError" class="error"></div>
+      <button class="primary" id="nameBtn">Chatga kirish</button>
     </div>
+  </div>
+</section>
 
-    <!-- Delete Confirmation Modal -->
-    <div id="deleteModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-title">Bu xabarni o'chirishni xohlaysizmi?</div>
-            <div class="modal-buttons">
-                <button id="cancelDeleteBtn" class="modal-btn cancel">Yo'q</button>
-                <button id="confirmDeleteBtn" class="modal-btn confirm">O'chirish</button>
-            </div>
-        </div>
+<section id="chatScreen" class="hidden">
+  <header class="header">
+    <div class="brand">
+      <div class="brandIcon">T</div>
+      <div class="brandText"><b>Toper.uz</b><span>Bizning suhbat</span></div>
     </div>
+    <button class="logout" id="logoutBtn">Chiqish</button>
+  </header>
 
-    <!-- Image Modal -->
-    <div id="imageModal" class="modal">
-        <div style="position: relative; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;">
-            <img id="modalImage" style="max-width: 90%; max-height: 80%; border-radius: 12px; object-fit: contain;" alt="">
-        </div>
+  <main id="messages" class="messages">
+    <div id="empty" class="empty">Hozircha xabar yo‘q</div>
+  </main>
+
+  <div class="composer">
+    <label class="iconBtn" style="display:grid;place-items:center;cursor:pointer">
+      📷
+      <input id="imageInput" type="file" accept="image/*" hidden>
+    </label>
+    <input id="messageInput" type="text" placeholder="Xabar yozing..." autocomplete="off">
+    <button class="iconBtn send" id="sendBtn">➤</button>
+  </div>
+  <div class="footer">Murodjon yaratgan ♥</div>
+</section>
+
+<div id="deleteModal" class="modal hidden">
+  <div class="modalBox">
+    <h3>Xabarni o‘chirasizmi?</h3>
+    <p>Bu xabar chatdan butunlay o‘chiriladi.</p>
+    <div class="modalBtns">
+      <button class="cancel" id="cancelDelete">Bekor qilish</button>
+      <button class="danger" id="confirmDelete">O‘chirish</button>
     </div>
+  </div>
+</div>
 
-    <script src="https://www.gstatic.com/firebaseapp/11.3.0/firebase-app-compat.min.js"></script>
-    <script src="https://www.gstatic.com/firebaseapp/11.3.0/firebase-database-compat.min.js"></script>
-    <script>
-        // ========== CONSTANTS ==========
-        const ACCESS_CODE = "0906";
-        const ONE_HOUR = 60 * 60 * 1000;
-        const CLEANUP_INTERVAL = 1 * 60 * 1000; // 1 minute
+<div id="imageModal" class="modal imageModal hidden">
+  <img id="bigImage" src="" alt="Rasm">
+</div>
 
-        // ========== FIREBASE CONFIG ==========
-        const firebaseConfig = {
-            apiKey: "AIzaSyAV7jDmCi89XU3-xLpk_WRU_mXbFcAK_qY",
-            authDomain: "kiyimlar-olamiz-uz.firebaseapp.com",
-            databaseURL: "https://kiyimlar-olamiz-uz-default-rtdb.firebaseio.com",
-            projectId: "kiyimlar-olamiz-uz",
-            storageBucket: "kiyimlar-olamiz-uz.firebasestorage.app",
-            messagingSenderId: "721401033200",
-            appId: "1:721401033200:web:d543e11684bfdb39fa2d35"
-        };
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+import {
+  getDatabase, ref, push, onValue, remove
+} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-database.js";
 
-        firebase.initializeApp(firebaseConfig);
-        const database = firebase.database();
-        const ROOM_ID = "bizning-suhbat-2026";
-        const MESSAGES_PATH = `rooms/${ROOM_ID}/messages`;
+const firebaseConfig = {
+  apiKey: "AIzaSyAV7jDmCi89XU3-xLpk_WRU_mXbFcAK_qY",
+  authDomain: "kiyimlar-olamiz-uz.firebaseapp.com",
+  databaseURL: "https://kiyimlar-olamiz-uz-default-rtdb.firebaseio.com",
+  projectId: "kiyimlar-olamiz-uz",
+  storageBucket: "kiyimlar-olamiz-uz.firebasestorage.app",
+  messagingSenderId: "721401033200",
+  appId: "1:721401033200:web:d543e11684bfdb39fa2d35"
+};
 
-        // ========== STATE ==========
-        let currentUsername = null;
-        let messageToDelete = null;
-        let messageListenerAttached = false;
+const ACCESS_CODE = "0906";
+const ONE_HOUR = 60 * 60 * 1000;
+const ROOM = "bizning-suhbat-2026";
+const MESSAGES_PATH = `rooms/${ROOM}/messages`;
 
-        // ========== DOM ELEMENTS ==========
-        const loginScreen = document.getElementById('loginScreen');
-        const chatScreen = document.getElementById('chatScreen');
-        const pinInput = document.getElementById('pinInput');
-        const pinError = document.getElementById('pinError');
-        const usernameInput = document.getElementById('usernameInput');
-        const usernameError = document.getElementById('usernameError');
-        const messagesContainer = document.getElementById('messagesContainer');
-        const messageInput = document.getElementById('messageInput');
-        const sendBtn = document.getElementById('sendBtn');
-        const imageBtn = document.getElementById('imageBtn');
-        const imageInput = document.getElementById('imageInput');
-        const logoutBtn = document.getElementById('logoutBtn');
-        const deleteModal = document.getElementById('deleteModal');
-        const imageModal = document.getElementById('imageModal');
-        const modalImage = document.getElementById('modalImage');
-        const cancelDeleteBtn = document.getElementById('cancelDeleteBtn');
-        const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+const messagesRef = ref(db, MESSAGES_PATH);
 
-        // ========== LOGIN FLOW ==========
-        document.getElementById('pinSubmitBtn').addEventListener('click', handlePinSubmit);
-        document.getElementById('usernameSubmitBtn').addEventListener('click', handleUsernameSubmit);
+const loginScreen = document.getElementById("loginScreen");
+const chatScreen = document.getElementById("chatScreen");
+const pinStep = document.getElementById("pinStep");
+const nameStep = document.getElementById("nameStep");
+const pinInput = document.getElementById("pinInput");
+const nameInput = document.getElementById("nameInput");
+const pinError = document.getElementById("pinError");
+const nameError = document.getElementById("nameError");
+const messagesBox = document.getElementById("messages");
+const empty = document.getElementById("empty");
+const messageInput = document.getElementById("messageInput");
+const imageInput = document.getElementById("imageInput");
 
-        pinInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') handlePinSubmit();
-            if (!/\d/.test(e.key) && !['Backspace', 'Delete'].includes(e.key)) e.preventDefault();
-        });
+let currentUsername = "";
+let pendingDelete = null;
+let messagesCache = {};
 
-        usernameInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') handleUsernameSubmit();
-        });
+function normalizeMessage(id, m) {
+  return {
+    id,
+    author: m?.author ?? m?.sender ?? "",
+    timestamp: Number(m?.timestamp ?? m?.createdAt ?? 0),
+    text: m?.text ?? "",
+    image: m?.image ?? ""
+  };
+}
 
-        function handlePinSubmit() {
-            const pin = pinInput.value.trim();
-            pinError.textContent = '';
+function showPin() {
+  loginScreen.classList.remove("hidden");
+  chatScreen.classList.add("hidden");
+  pinStep.classList.remove("hidden");
+  nameStep.classList.add("hidden");
+  pinInput.value = "";
+  pinError.textContent = "";
+  setTimeout(() => pinInput.focus(), 100);
+}
 
-            if (pin.length !== 4) {
-                pinError.textContent = 'Kod 4 raqamli bo\'lishi kerak';
-                return;
-            }
+function enterChat() {
+  loginScreen.classList.add("hidden");
+  chatScreen.classList.remove("hidden");
+  messageInput.focus();
+}
 
-            if (pin !== ACCESS_CODE) {
-                pinError.textContent = 'Kod noto\'g\'ri';
-                pinInput.value = '';
-                return;
-            }
+function showName() {
+  pinStep.classList.add("hidden");
+  nameStep.classList.remove("hidden");
+  nameInput.focus();
+}
 
-            showUsernameStep();
-        }
+function loginWithPin() {
+  if (pinInput.value !== ACCESS_CODE) {
+    pinError.textContent = "Kod noto‘g‘ri. Faqat 0906 kiriting.";
+    pinInput.value = "";
+    pinInput.focus();
+    return;
+  }
+  pinError.textContent = "";
+  sessionStorage.setItem("toper_unlocked", "1");
 
-        function handleUsernameSubmit() {
-            const username = usernameInput.value.trim();
-            usernameError.textContent = '';
+  const saved = localStorage.getItem("toper_username");
+  if (saved) {
+    currentUsername = saved;
+    enterChat();
+  } else {
+    showName();
+  }
+}
 
-            if (username.length < 2) {
-                usernameError.textContent = 'Ism kamida 2 ta belgi bo\'lishi kerak';
-                return;
-            }
+function loginWithName() {
+  const name = nameInput.value.trim();
+  if (name.length < 2) {
+    nameError.textContent = "Ism kamida 2 ta belgidan iborat bo‘lsin.";
+    return;
+  }
+  currentUsername = name;
+  localStorage.setItem("toper_username", name);
+  enterChat();
+}
 
-            if (username.length > 30) {
-                usernameError.textContent = 'Ism maksimal 30 ta belgi bo\'lishi kerak';
-                return;
-            }
+document.getElementById("pinBtn").onclick = loginWithPin;
+document.getElementById("nameBtn").onclick = loginWithName;
 
-            localStorage.setItem('toper_username', username);
-            currentUsername = username;
-            enterChat();
-        }
+pinInput.addEventListener("keydown", e => {
+  if (e.key === "Enter") loginWithPin();
+});
+nameInput.addEventListener("keydown", e => {
+  if (e.key === "Enter") loginWithName();
+});
+messageInput.addEventListener("keydown", e => {
+  if (e.key === "Enter") sendMessage();
+});
 
-        function showUsernameStep() {
-            document.getElementById('pinStep').classList.remove('active');
-            document.getElementById('usernameStep').classList.add('active');
-            usernameInput.focus();
-        }
+function formatTime(ts) {
+  return new Date(ts).toLocaleTimeString("uz-UZ", {
+    hour: "2-digit", minute: "2-digit"
+  });
+}
 
-        function enterChat() {
-            loginScreen.style.display = 'none';
-            chatScreen.classList.add('active');
-            messageInput.focus();
-            loadMessages();
-            startCleanupInterval();
-        }
+function renderMessages(data) {
+  messagesCache = data || {};
+  messagesBox.innerHTML = "";
+  const list = Object.entries(messagesCache)
+    .map(([id,m]) => normalizeMessage(id,m))
+    .filter(m => m.timestamp > 0 && Date.now() - m.timestamp <= ONE_HOUR)
+    .sort((a,b) => a.timestamp - b.timestamp);
 
-        // ========== LOGOUT ==========
-        logoutBtn.addEventListener('click', () => {
-            if (confirm('Chiqishni tasdiqlaysizmi?')) {
-                logout();
-            }
-        });
+  if (!list.length) {
+    messagesBox.appendChild(empty);
+    return;
+  }
 
-        function logout() {
-            localStorage.removeItem('toper_username');
-            currentUsername = null;
-            messageToDelete = null;
-            messageListenerAttached = false;
-            
-            pinInput.value = '';
-            usernameInput.value = '';
-            pinError.textContent = '';
-            usernameError.textContent = '';
-            messagesContainer.innerHTML = '';
+  for (const msg of list) {
+    const mine = msg.author === currentUsername;
+    const row = document.createElement("div");
+    row.className = "msgRow " + (mine ? "mine" : "other");
 
-            document.getElementById('pinStep').classList.add('active');
-            document.getElementById('usernameStep').classList.remove('active');
+    const bubble = document.createElement("div");
+    bubble.className = "bubble";
 
-            chatScreen.classList.remove('active');
-            loginScreen.style.display = 'flex';
-            pinInput.focus();
-        }
+    if (!mine && msg.author) {
+      const n = document.createElement("div");
+      n.className = "name";
+      n.textContent = msg.author;
+      bubble.appendChild(n);
+    }
 
-        // ========== MESSAGE HANDLING ==========
-        function loadMessages() {
-            database.ref(MESSAGES_PATH).on('value', (snapshot) => {
-                const messages = snapshot.val();
-                
-                if (!messageListenerAttached) {
-                    messageListenerAttached = true;
-                    renderMessages(messages);
-                } else {
-                    renderMessages(messages);
-                }
+    if (msg.image) {
+      const img = document.createElement("img");
+      img.className = "photo";
+      img.src = msg.image;
+      img.alt = "Rasm";
+      img.onclick = () => {
+        document.getElementById("bigImage").src = msg.image;
+        document.getElementById("imageModal").classList.remove("hidden");
+      };
+      bubble.appendChild(img);
+    }
 
-                scrollToBottom();
-                cleanupExpiredMessages();
-            });
-        }
+    if (msg.text) {
+      const text = document.createElement("div");
+      text.className = "text";
+      text.textContent = msg.text;
+      bubble.appendChild(text);
+    }
 
-        function renderMessages(messages) {
-            messagesContainer.innerHTML = '';
-            if (!messages) return;
+    const time = document.createElement("div");
+    time.className = "time";
+    time.textContent = formatTime(msg.timestamp);
+    bubble.appendChild(time);
 
-            const messageArray = Object.entries(messages).map(([id, data]) => ({
-                id,
-                ...data
-            }));
+    if (mine) {
+      const actions = document.createElement("div");
+      actions.className = "actions";
+      const del = document.createElement("button");
+      del.className = "deleteBtn";
+      del.textContent = "O‘chirish";
+      del.onclick = () => openDelete(msg.id);
+      actions.appendChild(del);
+      bubble.appendChild(actions);
+    }
 
-            messageArray.sort((a, b) => (a.timestamp || 0) - (b.timestamp || 0));
+    row.appendChild(bubble);
+    messagesBox.appendChild(row);
+  }
 
-            messageArray.forEach(msg => {
-                if (msg.timestamp && Date.now() - msg.timestamp > ONE_HOUR) {
-                    return; // Skip expired messages
-                }
-                renderMessage(msg);
-            });
-        }
+  messagesBox.scrollTop = messagesBox.scrollHeight;
+}
 
-        function renderMessage(msg) {
-            const isOwn = msg.author === currentUsername;
-            const messageGroup = document.createElement('div');
-            messageGroup.className = `message-group ${isOwn ? 'own' : 'other'}`;
-            messageGroup.dataset.messageId = msg.id;
+onValue(messagesRef, snapshot => {
+  renderMessages(snapshot.val());
+}, error => {
+  console.error(error);
+  messagesBox.innerHTML = '<div class="empty">Chatga ulanishda xatolik yuz berdi.</div>';
+});
 
-            const bubble = document.createElement('div');
-            bubble.className = 'message-bubble';
+async function cleanupExpired() {
+  const now = Date.now();
+  for (const [id, raw] of Object.entries(messagesCache)) {
+    const msg = normalizeMessage(id, raw);
+    if (msg.timestamp && now - msg.timestamp > ONE_HOUR) {
+      try {
+        await remove(ref(db, `${MESSAGES_PATH}/${id}`));
+      } catch(e) {
+        console.error("O‘chirish xatosi:", e);
+      }
+    }
+  }
+}
+setInterval(cleanupExpired, 60 * 1000);
 
-            // Text content
-            if (msg.text) {
-                const textNode = document.createElement('div');
-                textNode.textContent = msg.text;
-                textNode.style.wordBreak = 'break-word';
-                bubble.appendChild(textNode);
-            }
+async function sendMessage() {
+  const text = messageInput.value.trim();
+  const file = imageInput.files[0];
 
-            // Image content
-            if (msg.image) {
-                const img = document.createElement('img');
-                img.src = msg.image;
-                img.className = 'message-image';
-                img.addEventListener('click', () => {
-                    modalImage.src = msg.image;
-                    imageModal.classList.add('active');
-                });
-                bubble.appendChild(img);
-            }
+  if (!text && !file) return;
 
-            // Info
-            const info = document.createElement('div');
-            info.className = 'message-info';
+  let image = "";
+  if (file) {
+    if (file.size > 4 * 1024 * 1024) {
+      alert("Rasm 4 MB dan kichik bo‘lsin.");
+      return;
+    }
+    image = await fileToDataURL(file);
+  }
 
-            const time = new Date(msg.timestamp).toLocaleTimeString('uz-UZ', {
-                hour: '2-digit',
-                minute: '2-digit'
-            });
-            info.textContent = `${msg.author} • ${time}`;
+  try {
+    await push(messagesRef, {
+      author: currentUsername,
+      timestamp: Date.now(),
+      text: text || null,
+      image: image || null
+    });
+    messageInput.value = "";
+    imageInput.value = "";
+    messageInput.focus();
+  } catch(e) {
+    alert("Xabar yuborilmadi. Firebase ulanishini tekshiring.");
+    console.error(e);
+  }
+}
 
-            if (isOwn) {
-                const deleteBtn = document.createElement('button');
-                deleteBtn.className = 'delete-btn';
-                deleteBtn.textContent = 'O\'chirish';
-                deleteBtn.addEventListener('click', () => {
-                    messageToDelete = msg.id;
-                    deleteModal.classList.add('active');
-                });
-                info.appendChild(deleteBtn);
-            }
+function fileToDataURL(file) {
+  return new Promise((resolve,reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
 
-            bubble.appendChild(info);
-            messageGroup.appendChild(bubble);
-            messagesContainer.appendChild(messageGroup);
-        }
+document.getElementById("sendBtn").onclick = sendMessage;
 
-        // ========== SEND MESSAGE ==========
-        sendBtn.addEventListener('click', sendMessage);
-        messageInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                sendMessage();
-            }
-        });
+function openDelete(id) {
+  pendingDelete = id;
+  document.getElementById("deleteModal").classList.remove("hidden");
+}
+document.getElementById("cancelDelete").onclick = () => {
+  pendingDelete = null;
+  document.getElementById("deleteModal").classList.add("hidden");
+};
+document.getElementById("confirmDelete").onclick = async () => {
+  if (!pendingDelete) return;
+  try {
+    const msg = normalizeMessage(pendingDelete, messagesCache[pendingDelete]);
+    if (msg.author !== currentUsername) {
+      alert("Faqat o‘zingiz yuborgan xabarni o‘chira olasiz.");
+    } else {
+      await remove(ref(db, `${MESSAGES_PATH}/${pendingDelete}`));
+    }
+  } catch(e) {
+    console.error(e);
+    alert("Xabarni o‘chirishda xatolik.");
+  }
+  pendingDelete = null;
+  document.getElementById("deleteModal").classList.add("hidden");
+};
 
-        messageInput.addEventListener('input', () => {
-            messageInput.style.height = 'auto';
-            messageInput.style.height = Math.min(messageInput.scrollHeight, 100) + 'px';
-        });
+document.getElementById("imageModal").onclick = () => {
+  document.getElementById("imageModal").classList.add("hidden");
+};
 
-        function sendMessage() {
-            const text = messageInput.value.trim();
-            if (!text && !messageInput.hasAttribute('data-image')) return;
+document.getElementById("logoutBtn").onclick = () => {
+  sessionStorage.removeItem("toper_unlocked");
+  currentUsername = "";
+  showPin();
+};
 
-            const messageData = {
-                author: currentUsername,
-                timestamp: Date.now(),
-                text: text || null
-            };
-
-            if (messageInput.hasAttribute('data-image')) {
-                messageData.image = messageInput.getAttribute('data-image');
-                messageInput.removeAttribute('data-image');
-                messageInput.style.backgroundImage = 'none';
-            }
-
-            database.ref(MESSAGES_PATH).push(messageData);
-            messageInput.value = '';
-            messageInput.style.height = 'auto';
-            messageInput.focus();
-            scrollToBottom();
-        }
-
-        // ========== IMAGE UPLOAD ==========
-        imageBtn.addEventListener('click', () => imageInput.click());
-
-        imageInput.addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = (event) => {
-                compressImage(event.target.result, (compressed) => {
-                    messageInput.setAttribute('data-image', compressed);
-                    messageInput.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.1)), url(${compressed})`;
-                    messageInput.style.backgroundSize = 'cover';
-                    messageInput.style.backgroundPosition = 'center';
-                    messageInput.focus();
-                });
-            };
-            reader.readAsDataURL(file);
-            imageInput.value = '';
-        });
-
-        function compressImage(dataUrl, callback) {
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
-            const img = new Image();
-
-            img.onload = () => {
-                let width = img.width;
-                let height = img.height;
-                const maxDim = 800;
-
-                if (width > height) {
-                    if (width > maxDim) {
-                        height = Math.round(height * (maxDim / width));
-                        width = maxDim;
-                    }
-                } else {
-                    if (height > maxDim) {
-                        width = Math.round(width * (maxDim / height));
-                        height = maxDim;
-                    }
-                }
-
-                canvas.width = width;
-                canvas.height = height;
-                ctx.drawImage(img, 0, 0, width, height);
-                callback(canvas.toDataURL('image/jpeg', 0.7));
-            };
-
-            img.src = dataUrl;
-        }
-
-        // ========== DELETE MESSAGE ==========
-        cancelDeleteBtn.addEventListener('click', () => {
-            deleteModal.classList.remove('active');
-            messageToDelete = null;
-        });
-
-        confirmDeleteBtn.addEventListener('click', () => {
-            if (messageToDelete) {
-                database.ref(`${MESSAGES_PATH}/${messageToDelete}`).remove();
-                deleteModal.classList.remove('active');
-                messageToDelete = null;
-            }
-        });
-
-        imageModal.addEventListener('click', () => {
-            imageModal.classList.remove('active');
-        });
-
-        // ========== AUTO DELETE EXPIRED MESSAGES ==========
-        function cleanupExpiredMessages() {
-            database.ref(MESSAGES_PATH).once('value', (snapshot) => {
-                const messages = snapshot.val();
-                if (!messages) return;
-
-                Object.entries(messages).forEach(([id, msg]) => {
-                    if (msg.timestamp && Date.now() - msg.timestamp > ONE_HOUR) {
-                        database.ref(`${MESSAGES_PATH}/${id}`).remove();
-                    }
-                });
-            });
-        }
-
-        function startCleanupInterval() {
-            setInterval(cleanupExpiredMessages, CLEANUP_INTERVAL);
-        }
-
-        // ========== SCROLL ==========
-        function scrollToBottom() {
-            setTimeout(() => {
-                messagesContainer.scrollTop = messagesContainer.scrollHeight;
-            }, 50);
-        }
-
-        // ========== INIT ==========
-        window.addEventListener('load', () => {
-            const saved = localStorage.getItem('toper_username');
-            if (saved) {
-                currentUsername = saved;
-                pinInput.value = '';
-                usernameInput.value = '';
-                enterChat();
-            } else {
-                pinInput.focus();
-            }
-        });
-
-        // Prevent zoom on double tap
-        let lastTouchEnd = 0;
-        document.addEventListener('touchend', (e) => {
-            const now = Date.now();
-            if (now - lastTouchEnd <= 300) {
-                e.preventDefault();
-            }
-            lastTouchEnd = now;
-        }, false);
-    </script>
+window.addEventListener("load", () => {
+  // Har safar yangi sahifa ochilganda PIN so‘raladi.
+  sessionStorage.removeItem("toper_unlocked");
+  showPin();
+});
+</script>
 </body>
 </html>
