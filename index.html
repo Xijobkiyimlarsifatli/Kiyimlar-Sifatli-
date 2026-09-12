@@ -20,7 +20,7 @@ header{flex:none;padding:15px 16px calc(13px + env(safe-area-inset-top));padding
 .bubble{max-width:min(78%,560px);padding:10px 13px;border-radius:19px 19px 19px 6px;background:#fff;border:1px solid #eee8f0;box-shadow:0 3px 12px rgba(35,25,40,.06);overflow-wrap:anywhere}
 .mine .bubble{border-radius:19px 19px 6px 19px;background:#2b2530;color:#fff;border-color:#2b2530}
 .name{font-size:11px;font-weight:800;color:#8a728f;margin-bottom:4px}.mine .name{color:#d9c9df}
-.msgtext{font-size:15px;line-height:1.45;white-space:pre-wrap}.time{font-size:10px;opacity:.55;text-align:right;margin-top:5px}
+.msgtext{font-size:15px;line-height:1.45;white-space:pre-wrap}.time{font-size:10px;opacity:.55;text-align:right;margin-top:5px}.delete{display:block;margin-top:7px;margin-left:auto;border:0;background:transparent;color:#a99eaa;font-size:11px;padding:2px 0}.delete:hover{text-decoration:underline;color:#8d687f}.mine .delete{color:#cdbdce}
 .photo{display:block;width:auto;max-width:100%;max-height:360px;border-radius:14px;margin-top:6px}
 .empty{text-align:center;color:#9a919e;padding:55px 25px;font-size:14px}
 #status{flex:none;min-height:18px;font-size:11px;color:#918894;text-align:center;padding:2px 10px;background:#fff}
@@ -108,7 +108,7 @@ form{flex:none;display:flex;align-items:center;gap:8px;padding:9px 10px calc(9px
 
 <script type="module">
 import {initializeApp} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
-import {getDatabase, ref, push, onChildAdded, query, limitToLast} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-database.js";
+import {getDatabase, ref, push, onChildAdded, query, limitToLast, remove} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-database.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAV7jDmCi89XU3-xLpk_WRU_mXbFcAK_qY",
@@ -147,14 +147,32 @@ const logout=document.querySelector("#logout");
 function esc(s){return String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));}
 function time(t){return new Date(t).toLocaleTimeString("uz-UZ",{hour:"2-digit",minute:"2-digit"});}
 
-function render(m){
+function render(m,key){
   const empty=messages.querySelector(".empty"); if(empty) empty.remove();
+  if(document.querySelector(`[data-message-id="${key}"]`)) return;
   const mine=m.name===me;
-  const d=document.createElement("div"); d.className="msg "+(mine?"mine":"");
+  const d=document.createElement("div");
+  d.className="msg "+(mine?"mine":"");
+  d.dataset.messageId=key;
   const media=m.image?`<img class="photo" src="${m.image}" alt="Rasm" loading="lazy">`:"";
-  d.innerHTML=`<div class="bubble"><div class="name">${esc(m.name)}</div>${m.text?`<div class="msgtext">${esc(m.text)}</div>`:""}${media}<div class="time">${time(m.createdAt)}</div></div>`;
+  const del=mine?`<button class="delete" type="button" data-delete="${key}">O‘chirish</button>`:"";
+  d.innerHTML=`<div class="bubble"><div class="name">${esc(m.name)}</div>${m.text?`<div class="msgtext">${esc(m.text)}</div>`:""}${media}<div class="time">${time(m.createdAt)}</div>${del}</div>`;
   messages.appendChild(d);
   messages.scrollTop=messages.scrollHeight;
+  if(mine){
+    d.querySelector("[data-delete]").onclick=async()=>{
+      if(!confirm("Bu xabarni o‘chirishni xohlaysizmi?")) return;
+      status.textContent="O‘chirilmoqda...";
+      try{
+        await remove(ref(db,"rooms/"+roomId+"/messages/"+key));
+        d.remove();
+        if(!messages.querySelector(".msg")) messages.innerHTML='<div class="empty">Suhbatni boshlash uchun xabar yozing.</div>';
+        status.textContent="";
+      }catch(err){
+        status.textContent="O‘chirishda xatolik: "+err.message;
+      }
+    };
+  }
 }
 
 function connect(){
@@ -163,7 +181,7 @@ function connect(){
   who.textContent=`Siz: ${me}`;
   setup.classList.add("hidden");
   const q=query(ref(db,"rooms/"+roomId+"/messages"),limitToLast(100));
-  onChildAdded(q,s=>render(s.val()),e=>{
+  onChildAdded(q,s=>render(s.val(),s.key),e=>{
     status.textContent="Ulanishda xatolik: "+e.message;
   });
   setTimeout(()=>text.focus(),150);
