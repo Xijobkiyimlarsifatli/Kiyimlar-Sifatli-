@@ -3,142 +3,259 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#6557e8">
 <meta name="description" content="Toper.uz — shaxsiy suhbat">
-<meta name="theme-color" content="#6757e8">
-<title>Toper.uz — Bizning suhbat</title>
+<title>Toper.uz</title>
 <style>
 :root{
-  --primary:#6757e8;--primary2:#7b6df2;--bg:#f6f7fc;--text:#172033;
-  --muted:#8a93a7;--border:#e8eaf1;--green:#27c768;--danger:#e5484d;
+ --primary:#6757e8;--primary2:#806ff5;--ink:#171827;--muted:#8991a7;
+ --line:#e8eaf2;--soft:#f6f7fc;--green:#24c768;--danger:#e5484d;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-html,body{width:100%;height:100%;overflow:hidden}
-body{font-family:Inter,Arial,sans-serif;color:var(--text);background:var(--bg)}
-button,input{font:inherit}
-button{cursor:pointer}
+html,body{height:100%;overflow:hidden}
+body{font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;color:var(--ink);background:#eef0f8}
+button,input{font:inherit}button{cursor:pointer}
 .hidden{display:none!important}
 
 /* LOGIN */
-#loginScreen{height:100dvh;display:flex;align-items:center;justify-content:center;padding:18px;background:linear-gradient(135deg,#6251e6,#8a7cf2)}
-.loginBox{width:min(390px,100%);background:#fff;border-radius:26px;padding:32px 24px;box-shadow:0 25px 70px #1e164c35;text-align:center}
-.logo{width:70px;height:70px;border-radius:21px;margin:0 auto 16px;display:grid;place-items:center;color:#fff;font-size:32px;font-weight:800;background:linear-gradient(145deg,#745cf2,#5544d8)}
-.loginBox h1{font-size:28px;margin-bottom:7px}.loginBox p{color:#7d8699;margin-bottom:24px}
-.loginBox input{width:100%;height:52px;border:1px solid #dfe2ea;border-radius:15px;padding:0 16px;outline:none;margin-bottom:9px}
-.loginBox input:focus{border-color:var(--primary);box-shadow:0 0 0 3px #6757e815}
-.primary{width:100%;height:52px;border:0;border-radius:15px;background:var(--primary);color:#fff;font-weight:700}
-.error{height:20px;color:var(--danger);font-size:13px;margin-bottom:3px}
+#loginScreen{
+ height:100dvh;display:grid;place-items:center;padding:20px;
+ background:radial-gradient(circle at 15% 10%,#aaa0ff 0,transparent 35%),
+ linear-gradient(135deg,#4e40c8,#796bf0);
+}
+.login-card{
+ width:min(410px,100%);padding:35px 28px 30px;text-align:center;
+ background:#ffffffed;border:1px solid #ffffff80;border-radius:30px;
+ backdrop-filter:blur(22px);box-shadow:0 30px 90px #241b6838;
+}
+.login-logo{
+ width:80px;height:80px;margin:0 auto 18px;border-radius:25px;
+ display:grid;place-items:center;color:white;font-size:35px;font-weight:900;
+ background:linear-gradient(145deg,#8171fa,#5645d8);
+ box-shadow:0 14px 30px #604ee842;
+}
+.login-card h1{font-size:30px;letter-spacing:-1px}
+.login-card .sub{margin:8px 0 25px;color:#7b8297;font-size:14px}
+.login-card input{
+ width:100%;height:54px;padding:0 17px;border:1px solid #dfe2eb;
+ border-radius:16px;outline:none;background:#fff;text-align:center;
+ letter-spacing:3px;font-size:18px;
+}
+.login-card input.name-input{text-align:left;letter-spacing:0;font-size:15px}
+.login-card input:focus{border-color:var(--primary);box-shadow:0 0 0 4px #6757e814}
+.login-btn{
+ width:100%;height:54px;margin-top:9px;border:0;border-radius:16px;
+ color:#fff;font-weight:800;background:linear-gradient(135deg,#7867f1,#5947d9);
+ box-shadow:0 10px 24px #6655e63b;
+}
+.error{height:20px;margin-top:6px;color:var(--danger);font-size:13px}
 
 /* APP */
-#chatScreen{height:100dvh;width:100%;max-width:1180px;margin:auto;background:#fff;display:flex;flex-direction:column}
-.header{height:76px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 22px;border-bottom:1px solid var(--border);background:#fff;z-index:3}
-.brand{display:flex;align-items:center;gap:12px}
-.brandIcon{width:48px;height:48px;border-radius:16px;background:linear-gradient(145deg,#735ef1,#5543d8);color:#fff;display:grid;place-items:center;font-size:22px;font-weight:800;box-shadow:0 8px 18px #6757e825}
-.brandText b{display:block;font-size:18px}.status{display:flex;align-items:center;gap:6px;margin-top:3px;color:#788298;font-size:13px}
-.dot{width:8px;height:8px;border-radius:50%;background:#c3c8d2}.dot.online{background:var(--green);box-shadow:0 0 0 3px #27c76818}
-.logout{border:0;background:#fff0f2;color:#c53e4a;padding:10px 15px;border-radius:13px;font-weight:600}
-.messages{flex:1;overflow-y:auto;padding:24px 22px 18px;background-color:#f7f8fc;background-image:radial-gradient(#dfe3f0 1px,transparent 1px);background-size:25px 25px;scroll-behavior:smooth}
-.day{text-align:center;color:#9aa2b4;font-size:11px;margin:2px 0 18px}
-.msgRow{display:flex;margin-bottom:12px;align-items:flex-end;gap:8px}.msgRow.mine{justify-content:flex-end}
-.avatar{width:34px;height:34px;flex:none;border-radius:50%;display:grid;place-items:center;background:linear-gradient(145deg,#7564ed,#5545d7);color:#fff;font-size:13px;font-weight:700}
-.bubble{max-width:min(75%,520px);padding:10px 12px;border-radius:18px;background:#fff;box-shadow:0 4px 15px #25304b0b;border:1px solid #edf0f6;position:relative}
-.mine .bubble{background:linear-gradient(145deg,#7462ee,#6251e5);color:#fff;border:0;border-bottom-right-radius:6px}
-.other .bubble{border-bottom-left-radius:6px}
-.name{font-size:11px;font-weight:700;color:var(--primary);margin-bottom:4px}.mine .name{color:#eceaff}
-.text{white-space:pre-wrap;word-break:break-word;line-height:1.45;font-size:15px}
-.time{font-size:10px;color:#9aa2b4;text-align:right;margin-top:5px}.mine .time{color:#ddd8ff}
-.photo{display:block;max-width:280px;max-height:350px;border-radius:13px;cursor:pointer;object-fit:cover;margin-bottom:4px}
-.actions{display:flex;justify-content:flex-end;margin-top:5px}.deleteBtn{border:0;background:transparent;color:#8b94a8;font-size:10px;padding:1px}.mine .deleteBtn{color:#eceaff}
-.typing{height:24px;padding-left:66px;color:#7e879c;font-size:12px;display:flex;align-items:center;gap:6px}
-.typingDots{display:inline-flex;gap:3px}.typingDots i{width:5px;height:5px;border-radius:50%;background:#9da5b8;animation:bounce 1s infinite}.typingDots i:nth-child(2){animation-delay:.15s}.typingDots i:nth-child(3){animation-delay:.3s}
-@keyframes bounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-4px)}}
-.empty{text-align:center;color:#9ca4b5;padding-top:18vh;font-size:14px}
-.composerWrap{flex:none;background:#fff;border-top:1px solid var(--border);padding:10px 16px 5px}
+#chatScreen{
+ width:100%;max-width:1200px;height:100dvh;margin:auto;background:white;
+ display:flex;flex-direction:column;box-shadow:0 0 55px #24274a12;
+}
+.header{
+ height:82px;flex:none;padding:0 25px;display:flex;align-items:center;
+ justify-content:space-between;background:#ffffffed;border-bottom:1px solid var(--line);
+ backdrop-filter:blur(18px);z-index:5;
+}
+.brand{display:flex;align-items:center;gap:13px}
+.brand-icon{
+ width:51px;height:51px;border-radius:17px;display:grid;place-items:center;
+ color:#fff;font-size:23px;font-weight:900;background:linear-gradient(145deg,#8170f9,#5946da);
+ box-shadow:0 10px 25px #6757e82c;
+}
+.brand-title{font-size:19px;font-weight:850;letter-spacing:-.3px}
+.status{display:flex;align-items:center;gap:6px;color:#80889d;font-size:12px;margin-top:4px}
+.status-dot{width:8px;height:8px;border-radius:50%;background:#bcc2cf}
+.status-dot.online{background:var(--green);box-shadow:0 0 0 4px #24c76818}
+.logout{
+ border:0;border-radius:13px;padding:10px 15px;background:#fff0f2;color:#c33e4b;
+ font-weight:700;transition:.2s;
+}.logout:hover{background:#ffe4e8}
+
+/* MESSAGES */
+.messages{
+ flex:1;overflow-y:auto;padding:27px 24px 14px;
+ background-color:#f8f8fc;
+ background-image:radial-gradient(#dfe1ee 1px,transparent 1px);
+ background-size:25px 25px;
+ scroll-behavior:smooth;
+}
+.day{text-align:center;color:#a0a6b7;font-size:11px;margin:0 0 18px}
+.msg-row{display:flex;align-items:flex-end;gap:9px;margin-bottom:13px}
+.msg-row.mine{justify-content:flex-end}
+.avatar{
+ width:35px;height:35px;flex:none;border-radius:50%;display:grid;place-items:center;
+ color:#fff;font-size:12px;font-weight:800;background:linear-gradient(145deg,#8272fa,#5c49dc);
+}
+.bubble{
+ max-width:min(73%,540px);padding:11px 13px;border:1px solid #eceef5;
+ border-radius:19px 19px 19px 6px;background:#fff;
+ box-shadow:0 6px 20px #26304c0d;
+}
+.mine .bubble{
+ color:#fff;border:0;border-radius:19px 19px 6px 19px;
+ background:linear-gradient(135deg,#7867f2,#604ddd);
+ box-shadow:0 9px 23px #6655df25;
+}
+.name{font-size:11px;font-weight:800;color:var(--primary);margin-bottom:4px}
+.mine .name{color:#eceaff}
+.text{font-size:15px;line-height:1.45;white-space:pre-wrap;word-break:break-word}
+.photo{
+ display:block;width:auto;max-width:300px;max-height:360px;object-fit:cover;
+ border-radius:14px;cursor:pointer;margin-bottom:4px;
+}
+.time{font-size:10px;text-align:right;color:#9ba2b3;margin-top:5px}
+.mine .time{color:#ddd9ff}
+.actions{text-align:right;margin-top:4px}
+.delete-btn{border:0;background:transparent;color:#8e96a8;font-size:10px;padding:1px}
+.mine .delete-btn{color:#e5e1ff}
+.empty{text-align:center;padding-top:18vh;color:#a1a8b8;font-size:14px}
+
+/* TYPING */
+.typing{
+ height:27px;display:flex;align-items:center;gap:6px;padding-left:68px;
+ color:#81899c;font-size:12px;background:#fff;
+}
+.dots{display:flex;gap:3px}.dots i{
+ width:5px;height:5px;border-radius:50%;background:#9da5b7;animation:bounce .9s infinite
+}.dots i:nth-child(2){animation-delay:.12s}.dots i:nth-child(3){animation-delay:.24s}
+@keyframes bounce{50%{transform:translateY(-4px)}}
+
+/* COMPOSER */
+.composer-wrap{flex:none;padding:10px 17px 5px;background:#fff;border-top:1px solid var(--line)}
 .composer{display:flex;align-items:center;gap:9px}
-.composer input[type=text]{flex:1;min-width:0;height:48px;border:1px solid #dfe3ec;border-radius:16px;padding:0 15px;outline:none;background:#fafbfe}
-.composer input[type=text]:focus{border-color:var(--primary);background:#fff}
-.iconBtn{width:48px;height:48px;border:0;border-radius:15px;background:#f0f1f7;display:grid;place-items:center;font-size:19px}
-.send{background:linear-gradient(145deg,#7563f0,#5947db);color:#fff;font-size:21px;box-shadow:0 7px 15px #6757e82c}
-.footer{text-align:center;color:#9ca4b7;font-size:11px;padding:5px 0 2px}
+.icon-btn{
+ width:48px;height:48px;border:0;border-radius:15px;background:#f0f1f7;
+ display:grid;place-items:center;font-size:19px;transition:.18s;
+}.icon-btn:hover{transform:translateY(-1px);background:#e9eaf3}
+.send{
+ color:#fff!important;font-size:21px;
+ background:linear-gradient(135deg,#7866f1,#5946d8)!important;
+ box-shadow:0 8px 18px #6655df30!important;
+}
+.message-input{
+ flex:1;min-width:0;height:48px;border:1px solid #dfe2ec;border-radius:16px;
+ padding:0 15px;outline:none;background:#fafbfe;
+}.message-input:focus{border-color:var(--primary);background:#fff;box-shadow:0 0 0 3px #6757e810}
+.footer{text-align:center;color:#a1a7b7;font-size:11px;padding:5px 0 2px}
+
+/* EMOJI */
+.emoji-panel{
+ position:absolute;bottom:72px;right:70px;width:270px;padding:12px;
+ border:1px solid var(--line);border-radius:18px;background:#fff;
+ box-shadow:0 18px 50px #22283b20;display:grid;grid-template-columns:repeat(8,1fr);
+ gap:5px;z-index:10;
+}
+.emoji-panel button{border:0;background:transparent;border-radius:9px;font-size:20px;padding:6px}
+.emoji-panel button:hover{background:#f0f1f7}
 
 /* MODALS */
-.modal{position:fixed;inset:0;background:#0009;display:flex;align-items:center;justify-content:center;padding:20px;z-index:20}
-.modalBox{width:min(340px,100%);background:#fff;border-radius:20px;padding:22px;text-align:center}.modalBox h3{margin-bottom:8px}.modalBox p{color:#788195;font-size:13px;margin-bottom:18px}
-.modalBtns{display:flex;gap:8px}.modalBtns button{flex:1;height:44px;border:0;border-radius:12px}.cancel{background:#eef0f5}.danger{background:var(--danger);color:#fff}
-.imageModal img{max-width:95vw;max-height:88vh;border-radius:15px}
+.modal{
+ position:fixed;inset:0;background:#0009;display:flex;align-items:center;
+ justify-content:center;padding:20px;z-index:30;
+}
+.modal-box{width:min(350px,100%);padding:23px;border-radius:21px;background:#fff;text-align:center}
+.modal-box h3{margin-bottom:8px}.modal-box p{color:#7d8598;font-size:13px;margin-bottom:18px}
+.modal-buttons{display:flex;gap:8px}.modal-buttons button{
+ flex:1;height:44px;border:0;border-radius:12px
+}.cancel{background:#eef0f5}.danger{background:var(--danger);color:#fff}
+.image-modal img{max-width:95vw;max-height:88vh;border-radius:16px}
 
 /* MOBILE */
 @media(max-width:650px){
- .header{height:66px;padding:0 12px}.brandIcon{width:42px;height:42px;border-radius:14px}.brandText b{font-size:16px}.status{font-size:11px}
- .logout{padding:9px 11px;font-size:12px}.messages{padding:17px 10px}.bubble{max-width:84%}.avatar{width:30px;height:30px}
- .photo{max-width:220px;max-height:300px}.composerWrap{padding:8px 8px 4px}.composer input[type=text]{height:46px}.iconBtn{width:44px;height:46px;border-radius:14px}
+ .header{height:67px;padding:0 11px}.brand-icon{width:43px;height:43px;border-radius:14px}
+ .brand-title{font-size:16px}.status{font-size:11px}.logout{font-size:12px;padding:9px 11px}
+ .messages{padding:18px 9px}.bubble{max-width:84%}.avatar{width:30px;height:30px}
+ .photo{max-width:230px;max-height:310px}.composer-wrap{padding:8px 8px 4px}
+ .icon-btn{width:44px;height:46px}.message-input{height:46px}
+ .emoji-panel{right:8px;bottom:70px;width:270px}
 }
 </style>
 </head>
 <body>
 
 <section id="loginScreen">
-  <div class="loginBox">
-    <div class="logo">T</div>
-    <h1>Toper.uz</h1>
-    <p>Kiyimlar sotib olish</p>
-    <div id="pinStep">
-      <input id="pinInput" type="password" inputmode="numeric" maxlength="4" placeholder="4 xonali kod" autocomplete="off">
-      <div id="pinError" class="error"></div>
-      <button class="primary" id="pinBtn">Kirish</button>
-    </div>
-    <div id="nameStep" class="hidden">
-      <input id="nameInput" type="text" maxlength="30" placeholder="Ismingiz" autocomplete="off">
-      <div id="nameError" class="error"></div>
-      <button class="primary" id="nameBtn">Sotib Olish</button>
-    </div>
+ <div class="login-card">
+  <div class="login-logo">T</div>
+  <h1>Toper.uz</h1>
+  <div class="sub">Faqat ikkingiz uchun maxsus suhbat</div>
+
+  <div id="pinStep">
+   <input id="pinInput" type="password" inputmode="numeric" maxlength="4"
+          placeholder="Kirish kodi" autocomplete="off">
+   <div id="pinError" class="error"></div>
+   <button id="pinBtn" class="login-btn">Kirish</button>
   </div>
+
+  <div id="nameStep" class="hidden">
+   <input id="nameInput" class="name-input" type="text" maxlength="30"
+          placeholder="Ismingiz" autocomplete="off">
+   <div id="nameError" class="error"></div>
+   <button id="nameBtn" class="login-btn">Soting va Oling</button>
+  </div>
+ </div>
 </section>
 
 <section id="chatScreen" class="hidden">
-  <header class="header">
-    <div class="brand">
-      <div class="brandIcon">T</div>
-      <div class="brandText">
-        <b>Toper.uz</b>
-        <div class="status"><span id="statusDot" class="dot"></span><span id="onlineText">Ulanmoqda...</span></div>
-      </div>
-    </div>
-    <button class="logout" id="logoutBtn">Chiqish</button>
-  </header>
-
-  <main id="messages" class="messages">
-    <div id="empty" class="empty">Hozircha xabar yo‘q</div>
-  </main>
-
-  <div id="typingBox" class="typing hidden">
-    <span id="typingName"></span>
-    <span>yozmoqda</span>
-    <span class="typingDots"><i></i><i></i><i></i></span>
+ <header class="header">
+  <div class="brand">
+   <div class="brand-icon">T</div>
+   <div>
+    <div class="brand-title">Toper.uz</div>
+    <div class="status"><span id="statusDot" class="status-dot"></span><span id="onlineText">Ulanmoqda...</span></div>
+   </div>
   </div>
+  <button id="logoutBtn" class="logout">Chiqish</button>
+ </header>
 
-  <div class="composerWrap">
-    <div class="composer">
-      <label class="iconBtn" title="Rasm yuborish" style="cursor:pointer">
-        📷<input id="imageInput" type="file" accept="image/*" hidden>
-      </label>
-      <input id="messageInput" type="text" placeholder="Xabar yozing..." autocomplete="off">
-      <button class="iconBtn send" id="sendBtn" title="Yuborish">➤</button>
-    </div>
-    <div class="footer">Chat uchun Maftuna Senga ♥</div>
+ <main id="messages" class="messages">
+  <div id="empty" class="empty">Hozircha xabar yo‘q</div>
+ </main>
+
+ <div id="typingBox" class="typing hidden">
+  <span id="typingName"></span><span>yozmoqda</span>
+  <span class="dots"><i></i><i></i><i></i></span>
+ </div>
+
+ <div class="composer-wrap">
+  <div class="composer">
+   <label class="icon-btn" title="Rasm yuborish" aria-label="Rasm yuborish">
+    📷
+    <input id="imageInput" type="file" accept="image/jpeg,image/png,image/webp" hidden>
+   </label>
+   <input id="messageInput" class="message-input" type="text"
+          placeholder="Xabar yozing..." autocomplete="off">
+   <button id="emojiBtn" class="icon-btn" title="Emoji">😊</button>
+   <button id="sendBtn" class="icon-btn send" title="Yuborish">➤</button>
   </div>
+  <div class="footer">Murodjon yaratgan ♥</div>
+ </div>
+ <div id="emojiPanel" class="emoji-panel hidden"></div>
 </section>
 
 <div id="deleteModal" class="modal hidden">
-  <div class="modalBox">
-    <h3>Xabarni o‘chirasizmi?</h3><p>Bu xabar chatdan o‘chiriladi.</p>
-    <div class="modalBtns"><button class="cancel" id="cancelDelete">Bekor qilish</button><button class="danger" id="confirmDelete">O‘chirish</button></div>
+ <div class="modal-box">
+  <h3>Xabarni o‘chirasizmi?</h3>
+  <p>Bu xabar chatdan o‘chiriladi.</p>
+  <div class="modal-buttons">
+   <button id="cancelDelete" class="cancel">Bekor qilish</button>
+   <button id="confirmDelete" class="danger">O‘chirish</button>
   </div>
+ </div>
 </div>
-<div id="imageModal" class="modal imageModal hidden"><img id="bigImage" alt="Rasm"></div>
+
+<div id="imageModal" class="modal image-modal hidden">
+ <img id="bigImage" alt="Rasm">
+</div>
 
 <script type="module">
 import {initializeApp} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
-import {getDatabase,ref,push,onValue,onDisconnect,set,remove,onValue as onValue2} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-database.js";
+import {
+ getDatabase,ref,push,onValue,onDisconnect,set,remove
+} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-database.js";
 
 const firebaseConfig={
  apiKey:"AIzaSyAV7jDmCi89XU3-xLpk_WRU_mXbFcAK_qY",
@@ -156,211 +273,352 @@ const ROOM="bizning-suhbat-2026";
 const MESSAGES_PATH=`rooms/${ROOM}/messages`;
 const PRESENCE_PATH=`rooms/${ROOM}/presence`;
 
-const app=initializeApp(firebaseConfig);
-const db=getDatabase(app);
+const db=getDatabase(initializeApp(firebaseConfig));
 const messagesRef=ref(db,MESSAGES_PATH);
 const presenceRef=ref(db,PRESENCE_PATH);
-
 const $=id=>document.getElementById(id);
-const loginScreen=$("loginScreen"),chatScreen=$("chatScreen");
-const pinStep=$("pinStep"),nameStep=$("nameStep");
-const pinInput=$("pinInput"),nameInput=$("nameInput");
-const pinError=$("pinError"),nameError=$("nameError");
-const messagesBox=$("messages"),empty=$("empty"),messageInput=$("messageInput"),imageInput=$("imageInput");
-const typingBox=$("typingBox"),typingName=$("typingName"),onlineText=$("onlineText"),statusDot=$("statusDot");
 
 let currentUsername="";
 let currentKey="";
 let messagesCache={};
 let presenceCache={};
-let typingTimer=null;
 let pendingDelete=null;
+let typingTimer=null;
 
 function normalize(id,m){
- return {id,author:m?.author??m?.sender??"",timestamp:Number(m?.timestamp??m?.createdAt??0),text:m?.text??"",image:m?.image??""};
+ return {
+  id,
+  author:m?.author??m?.sender??"",
+  timestamp:Number(m?.timestamp??m?.createdAt??0),
+  text:m?.text??"",
+  image:m?.image??""
+ };
 }
+
 function showPin(){
- loginScreen.classList.remove("hidden");chatScreen.classList.add("hidden");
- pinStep.classList.remove("hidden");nameStep.classList.add("hidden");
- pinInput.value="";pinError.textContent="";
- setTimeout(()=>pinInput.focus(),100);
+ $("loginScreen").classList.remove("hidden");
+ $("chatScreen").classList.add("hidden");
+ $("pinStep").classList.remove("hidden");
+ $("nameStep").classList.add("hidden");
+ $("pinInput").value="";
+ $("pinError").textContent="";
+ setTimeout(()=>$("pinInput").focus(),100);
 }
+
 function enterChat(){
- loginScreen.classList.add("hidden");chatScreen.classList.remove("hidden");
- messageInput.focus();setupPresence();
+ $("loginScreen").classList.add("hidden");
+ $("chatScreen").classList.remove("hidden");
+ setupPresence();
+ $("messageInput").focus();
 }
-function pinLogin(){
- if(pinInput.value!==ACCESS_CODE){
-  pinError.textContent="Kod noto‘g‘ri. Faqat 0906 kiriting.";
-  pinInput.value="";pinInput.focus();return;
+
+function loginPin(){
+ if($("pinInput").value!==ACCESS_CODE){
+  // Ataylab haqiqiy kodni ko‘rsatmaymiz.
+  $("pinError").textContent="Kirish kodi noto‘g‘ri. Qaytadan urinib ko‘ring.";
+  $("pinInput").value="";
+  $("pinInput").focus();
+  return;
  }
- pinError.textContent="";
+ $("pinError").textContent="";
  const saved=localStorage.getItem("toper_username");
- if(saved){currentUsername=saved;enterChat()}
- else{pinStep.classList.add("hidden");nameStep.classList.remove("hidden");nameInput.focus()}
+ if(saved){
+  currentUsername=saved;
+  enterChat();
+ }else{
+  $("pinStep").classList.add("hidden");
+  $("nameStep").classList.remove("hidden");
+  $("nameInput").focus();
+ }
 }
-function nameLogin(){
- const name=nameInput.value.trim();
- if(name.length<2){nameError.textContent="Ism kamida 2 ta belgidan iborat bo‘lsin.";return}
- currentUsername=name;localStorage.setItem("toper_username",name);enterChat();
+
+function loginName(){
+ const name=$("nameInput").value.trim();
+ if(name.length<2){
+  $("nameError").textContent="Ism kamida 2 ta belgidan iborat bo‘lsin.";
+  return;
+ }
+ $("nameError").textContent="";
+ currentUsername=name;
+ localStorage.setItem("toper_username",name);
+ enterChat();
 }
-$("pinBtn").onclick=pinLogin;$("nameBtn").onclick=nameLogin;
-pinInput.onkeydown=e=>{if(e.key==="Enter")pinLogin()};nameInput.onkeydown=e=>{if(e.key==="Enter")nameLogin()};
-messageInput.onkeydown=e=>{if(e.key==="Enter")sendMessage()};
+
+$("pinBtn").onclick=loginPin;
+$("nameBtn").onclick=loginName;
+$("pinInput").onkeydown=e=>{if(e.key==="Enter")loginPin()};
+$("nameInput").onkeydown=e=>{if(e.key==="Enter")loginName()};
+$("messageInput").onkeydown=e=>{
+ if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();sendMessage()}
+};
 
 function setupPresence(){
  if(!currentUsername)return;
  currentKey=sessionStorage.getItem("toper_presence_key");
- if(!currentKey){currentKey=crypto.randomUUID?crypto.randomUUID():Date.now().toString(36)+Math.random().toString(36).slice(2);sessionStorage.setItem("toper_presence_key",currentKey)}
+ if(!currentKey){
+  currentKey=crypto.randomUUID?
+   crypto.randomUUID():
+   Date.now().toString(36)+Math.random().toString(36).slice(2);
+  sessionStorage.setItem("toper_presence_key",currentKey);
+ }
  const mine=ref(db,`${PRESENCE_PATH}/${currentKey}`);
- set(mine,{name:currentUsername,online:true,typing:false,lastSeen:Date.now()});
- onDisconnect(mine).remove().catch(console.error);
+ const onlineData={name:currentUsername,online:true,typing:false,lastSeen:Date.now()};
+ set(mine,onlineData);
+ onDisconnect(mine).remove().catch(()=>{});
 
- onValue2(ref(db,".info/connected"),snap=>{
+ onValue(ref(db,".info/connected"),snap=>{
   if(snap.val()===true){
-   set(mine,{name:currentUsername,online:true,typing:false,lastSeen:Date.now()});
-   onDisconnect(mine).remove().catch(console.error);
+   set(mine,onlineData).catch(()=>{});
+   onDisconnect(mine).remove().catch(()=>{});
   }
  });
 }
+
 onValue(presenceRef,snap=>{
  presenceCache=snap.val()||{};
  updateOnline();
  updateTyping();
 });
+
 function activeUsers(){
  return Object.values(presenceCache).filter(x=>x&&x.online===true);
 }
+
 function updateOnline(){
- const users=activeUsers();
- const count=users.length;
- onlineText.textContent=count===0?"Hech kim online":count===1?"1 kishi online":`${count} kishi online`;
- statusDot.classList.toggle("online",count>0);
+ const count=activeUsers().length;
+ $("onlineText").textContent=
+  count===0?"Hech kim online":
+  count===1?"1 kishi online":
+  `${count} kishi online`;
+ $("statusDot").classList.toggle("online",count>0);
 }
+
 function updateTyping(){
- const other=activeUsers().find(x=>x.name!==currentUsername&&x.typing);
- if(other){typingName.textContent=other.name;typingBox.classList.remove("hidden")}
- else typingBox.classList.add("hidden");
+ const other=activeUsers().find(x=>x.name!==currentUsername&&x.typing===true);
+ $("typingBox").classList.toggle("hidden",!other);
+ if(other)$("typingName").textContent=other.name;
 }
+
 function setTyping(value){
- if(!currentKey)return;
- set(ref(db,`${PRESENCE_PATH}/${currentKey}/typing`),value).catch(()=>{});
+ if(currentKey)set(ref(db,`${PRESENCE_PATH}/${currentKey}/typing`),value).catch(()=>{});
 }
-messageInput.addEventListener("input",()=>{
- setTyping(messageInput.value.trim().length>0);
+
+$("messageInput").oninput=()=>{
+ setTyping($("messageInput").value.trim().length>0);
  clearTimeout(typingTimer);
  typingTimer=setTimeout(()=>setTyping(false),1200);
-});
+};
 
-function formatTime(ts){return new Date(ts).toLocaleTimeString("uz-UZ",{hour:"2-digit",minute:"2-digit"})}
+function formatTime(ts){
+ return new Date(ts).toLocaleTimeString("uz-UZ",{hour:"2-digit",minute:"2-digit"});
+}
+
 function renderMessages(data){
- messagesCache=data||{};messagesBox.innerHTML="";
- const list=Object.entries(messagesCache).map(([id,m])=>normalize(id,m))
+ messagesCache=data||{};
+ $("messages").innerHTML="";
+
+ const list=Object.entries(messagesCache)
+  .map(([id,m])=>normalize(id,m))
   .filter(m=>m.timestamp>0&&Date.now()-m.timestamp<=ONE_HOUR)
   .sort((a,b)=>a.timestamp-b.timestamp);
- if(!list.length){messagesBox.appendChild(empty);return}
+
+ if(!list.length){
+  $("messages").appendChild($("empty"));
+  return;
+ }
+
  let lastDay="";
- for(const msg of list){
-  const d=new Date(msg.timestamp).toLocaleDateString("uz-UZ");
-  if(d!==lastDay){const day=document.createElement("div");day.className="day";day.textContent=d;messagesBox.appendChild(day);lastDay=d}
-  const mine=msg.author===currentUsername,row=document.createElement("div");
-  row.className="msgRow "+(mine?"mine":"other");
-  if(!mine){const av=document.createElement("div");av.className="avatar";av.textContent=(msg.author||"?").charAt(0).toUpperCase();row.appendChild(av)}
-  const bubble=document.createElement("div");bubble.className="bubble";
-  if(!mine){const n=document.createElement("div");n.className="name";n.textContent=msg.author||"Noma'lum";bubble.appendChild(n)}
-  if(msg.image){
-   const img=document.createElement("img");img.className="photo";img.src=msg.image;img.alt="Rasm";
-   img.onclick=()=>{$("bigImage").src=msg.image;$("imageModal").classList.remove("hidden")};bubble.appendChild(img);
+ for(const m of list){
+  const d=new Date(m.timestamp).toLocaleDateString("uz-UZ");
+  if(d!==lastDay){
+   const day=document.createElement("div");
+   day.className="day";day.textContent=d;
+   $("messages").appendChild(day);lastDay=d;
   }
-  if(msg.text){const t=document.createElement("div");t.className="text";t.textContent=msg.text;bubble.appendChild(t)}
-  const tm=document.createElement("div");tm.className="time";tm.textContent=formatTime(msg.timestamp)+(mine?"  ✓✓":"");bubble.appendChild(tm);
-  if(mine){const a=document.createElement("div");a.className="actions";const b=document.createElement("button");b.className="deleteBtn";b.textContent="O‘chirish";b.onclick=()=>openDelete(msg.id);a.appendChild(b);bubble.appendChild(a)}
-  row.appendChild(bubble);messagesBox.appendChild(row);
- }
- messagesBox.scrollTop=messagesBox.scrollHeight;
-}
-onValue(messagesRef,snap=>renderMessages(snap.val()),err=>{console.error(err);messagesBox.innerHTML='<div class="empty">Firebase bilan ulanishda xatolik.</div>'});
 
-async function cleanup(){
- const now=Date.now();
+  const mine=m.author===currentUsername;
+  const row=document.createElement("div");
+  row.className="msg-row "+(mine?"mine":"other");
+
+  if(!mine){
+   const av=document.createElement("div");
+   av.className="avatar";
+   av.textContent=(m.author||"?").charAt(0).toUpperCase();
+   row.appendChild(av);
+  }
+
+  const bubble=document.createElement("div");
+  bubble.className="bubble";
+
+  if(!mine){
+   const n=document.createElement("div");
+   n.className="name";n.textContent=m.author||"Noma'lum";
+   bubble.appendChild(n);
+  }
+
+  if(m.image){
+   const img=document.createElement("img");
+   img.className="photo";img.src=m.image;img.alt="Rasm";img.loading="lazy";
+   img.onclick=()=>{
+    $("bigImage").src=m.image;
+    $("imageModal").classList.remove("hidden");
+   };
+   bubble.appendChild(img);
+  }
+
+  if(m.text){
+   const t=document.createElement("div");
+   t.className="text";t.textContent=m.text;
+   bubble.appendChild(t);
+  }
+
+  const tm=document.createElement("div");
+  tm.className="time";
+  tm.textContent=formatTime(m.timestamp)+(mine?"  ✓✓":"");
+  bubble.appendChild(tm);
+
+  if(mine){
+   const actions=document.createElement("div");
+   actions.className="actions";
+   const del=document.createElement("button");
+   del.className="delete-btn";
+   del.textContent="O‘chirish";
+   del.onclick=()=>{
+    pendingDelete=m.id;
+    $("deleteModal").classList.remove("hidden");
+   };
+   actions.appendChild(del);bubble.appendChild(actions);
+  }
+
+  row.appendChild(bubble);
+  $("messages").appendChild(row);
+ }
+ $("messages").scrollTop=$("messages").scrollHeight;
+}
+
+onValue(messagesRef,snap=>renderMessages(snap.val()),err=>{
+ console.error(err);
+ $("messages").innerHTML='<div class="empty">Chatga ulanishda xatolik.</div>';
+});
+
+async function cleanupExpired(){
  for(const [id,m] of Object.entries(messagesCache)){
-  const msg=normalize(id,m);
-  if(msg.timestamp&&now-msg.timestamp>ONE_HOUR){
-   try{await remove(ref(db,`${MESSAGES_PATH}/${id}`))}catch(e){console.error(e)}
+  const x=normalize(id,m);
+  if(x.timestamp&&Date.now()-x.timestamp>ONE_HOUR){
+   try{await remove(ref(db,`${MESSAGES_PATH}/${id}`))}catch(e){}
   }
  }
 }
-setInterval(cleanup,60000);cleanup();
+setInterval(cleanupExpired,60000);
 
-function fileToDataURL(file){
+function compressImage(file){
  return new Promise((resolve,reject)=>{
   const reader=new FileReader();
-  reader.onerror=()=>reject(new Error("Rasmni o‘qib bo‘lmadi."));
   reader.onload=()=>{
    const img=new Image();
-   img.onerror=()=>reject(new Error("Rasm formati o‘qilmadi."));
    img.onload=()=>{
-    const MAX_SIDE=1400;
-    const scale=Math.min(1,MAX_SIDE/Math.max(img.width,img.height));
-    const w=Math.max(1,Math.round(img.width*scale));
-    const h=Math.max(1,Math.round(img.height*scale));
+    const max=1280;
+    let w=img.width,h=img.height;
+    if(w>max||h>max){
+     const scale=Math.min(max/w,max/h);w=Math.round(w*scale);h=Math.round(h*scale);
+    }
     const canvas=document.createElement("canvas");
     canvas.width=w;canvas.height=h;
-    const ctx=canvas.getContext("2d",{alpha:false});
+    const ctx=canvas.getContext("2d");
     ctx.drawImage(img,0,0,w,h);
-    // RTDB uchun rasmni kichraytirib yuboramiz: tezroq va ishonchliroq.
-    resolve(canvas.toDataURL("image/jpeg",0.78));
+    resolve(canvas.toDataURL("image/jpeg",.78));
    };
-   img.src=reader.result;
+   img.onerror=reject;img.src=reader.result;
   };
-  reader.readAsDataURL(file);
+  reader.onerror=reject;reader.readAsDataURL(file);
  });
 }
+
 async function sendMessage(){
- const text=messageInput.value.trim(),file=imageInput.files[0];
- if(!text&&!file)return;
- if(file&&file.size>12*1024*1024){alert("Rasm 12 MB dan kichik bo‘lsin.");return}
- let image="";
- try{
-  if(file)image=await fileToDataURL(file);
-  await push(messagesRef,{author:currentUsername,timestamp:Date.now(),text:text||null,image:image||null});
-  messageInput.value="";imageInput.value="";setTyping(false);messageInput.focus();
- }catch(e){console.error(e);alert("Xabar yuborilmadi. Firebase sozlamalarini tekshiring.")}
-}
-$("imageInput").addEventListener("change",()=>{
+ const text=$("messageInput").value.trim();
  const file=$("imageInput").files[0];
- if(file){
-  if(file.size>12*1024*1024){
-   alert("Rasm 12 MB dan kichik bo‘lsin.");
-   $("imageInput").value="";
-   return;
-  }
-  messageInput.placeholder="Rasm tayyor — yuborish uchun ➤ bosing";
+ if(!text&&!file)return;
+
+ if(file&&file.size>12*1024*1024){
+  alert("Rasm hajmi juda katta. Kichikroq rasm tanlang.");
+  return;
  }
-});
+
+ try{
+  let image="";
+  if(file)image=await compressImage(file);
+
+  await push(messagesRef,{
+   author:currentUsername,
+   timestamp:Date.now(),
+   text:text||null,
+   image:image||null
+  });
+
+  $("messageInput").value="";
+  $("imageInput").value="";
+  $("emojiPanel").classList.add("hidden");
+  setTyping(false);
+  $("messageInput").focus();
+ }catch(e){
+  console.error(e);
+  alert("Xabar yuborilmadi. Internetni tekshirib qayta urinib ko‘ring.");
+ }
+}
 $("sendBtn").onclick=sendMessage;
 
-function openDelete(id){pendingDelete=id;$("deleteModal").classList.remove("hidden")}
-$("cancelDelete").onclick=()=>{pendingDelete=null;$("deleteModal").classList.add("hidden")};
+$("cancelDelete").onclick=()=>{
+ pendingDelete=null;
+ $("deleteModal").classList.add("hidden");
+};
+
 $("confirmDelete").onclick=async()=>{
  if(!pendingDelete)return;
  const msg=normalize(pendingDelete,messagesCache[pendingDelete]);
- if(msg.author!==currentUsername){alert("Faqat o‘zingiz yuborgan xabarni o‘chira olasiz.")}
- else{try{await remove(ref(db,`${MESSAGES_PATH}/${pendingDelete}`))}catch(e){alert("O‘chirishda xatolik.")}}
- pendingDelete=null;$("deleteModal").classList.add("hidden");
+ try{
+  if(msg.author===currentUsername){
+   await remove(ref(db,`${MESSAGES_PATH}/${pendingDelete}`));
+  }
+ }catch(e){alert("Xabarni o‘chirishda xatolik.")}
+ pendingDelete=null;
+ $("deleteModal").classList.add("hidden");
 };
+
 $("imageModal").onclick=()=>$("imageModal").classList.add("hidden");
+
+/* EMOJI */
+const emojis=["❤️","😍","🥰","😘","😂","🤣","😊","😉","😎","🤍","🫶","✨","🔥","💜","💙","💚","💛","😄","😁","😅","🥹","😭","😌","🙈","😇","🤗","👍","👏","🙏","🎉","🌹","🌸","☀️","🌙","⭐","💫","😴","😋","🤭","❤️‍🔥"];
+const panel=$("emojiPanel");
+emojis.forEach(e=>{
+ const b=document.createElement("button");
+ b.textContent=e;
+ b.onclick=()=>{
+  const input=$("messageInput"),start=input.selectionStart,end=input.selectionEnd;
+  input.value=input.value.slice(0,start)+e+input.value.slice(end);
+  input.focus();input.selectionStart=input.selectionEnd=start+e.length;
+  panel.classList.add("hidden");
+ };
+ panel.appendChild(b);
+});
+$("emojiBtn").onclick=e=>{
+ e.stopPropagation();panel.classList.toggle("hidden");
+};
+document.addEventListener("click",e=>{
+ if(!panel.contains(e.target)&&e.target!==$("emojiBtn"))panel.classList.add("hidden");
+});
+
+/* LOGOUT */
 $("logoutBtn").onclick=async()=>{
  setTyping(false);
- if(currentKey){try{await remove(ref(db,`${PRESENCE_PATH}/${currentKey}`))}catch(e){}}
+ if(currentKey){
+  try{await remove(ref(db,`${PRESENCE_PATH}/${currentKey}`))}catch(e){}
+ }
  sessionStorage.removeItem("toper_presence_key");
  currentKey="";currentUsername="";
  showPin();
 };
-window.addEventListener("beforeunload",()=>{if(currentKey)remove(ref(db,`${PRESENCE_PATH}/${currentKey}`)).catch(()=>{})});
 
-// Har safar sayt qayta ochilganda PIN yana so‘raladi.
-window.addEventListener("load",()=>showPin());
+window.addEventListener("load",showPin);
 </script>
 </body>
 </html>
