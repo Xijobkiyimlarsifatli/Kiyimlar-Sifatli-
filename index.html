@@ -180,7 +180,7 @@ button,input{font:inherit}button{cursor:pointer}
  <div class="login-card">
   <div class="login-logo">T</div>
   <h1>Toper.uz</h1>
-  <div class="sub">Kiring</div>
+  <div class="sub">Faqat ikkingiz uchun maxsus suhbat</div>
 
   <div id="pinStep">
    <input id="pinInput" type="password" inputmode="numeric" maxlength="4"
@@ -269,6 +269,7 @@ const ONE_HOUR=60*60*1000;
 const ROOM="bizning-suhbat-2026";
 const MESSAGES_PATH=`rooms/${ROOM}/messages`;
 const PRESENCE_PATH=`rooms/${ROOM}/presence`;
+const READS_PATH=`rooms/${ROOM}/reads`;
 
 const ACCESS_CODE="0906";
 const app=initializeApp(firebaseConfig),db=getDatabase(app);
@@ -296,6 +297,35 @@ function showPin(){
  $("pinInput").value="";
  $("pinError").textContent="";
  setTimeout(()=>$("pinInput").focus(),100);
+}
+
+function cleanupExpired(){
+ const now=Date.now();
+ for(const [id,m] of Object.entries(messagesCache||{})){
+  const ts=Number(m?.timestamp??m?.createdAt??0);
+  if(ts>0 && now-ts>ONE_HOUR){
+   remove(ref(db,`${MESSAGES_PATH}/${id}`)).catch(()=>{});
+  }
+ }
+}
+
+function attachDatabase(){
+ if(window.__toperListeners)return;
+ window.__toperListeners=true;
+ onValue(messagesRef,snap=>{
+  messagesCache=snap.val()||{};
+  renderMessages(messagesCache);
+  cleanupExpired();
+ });
+ onValue(presenceRef,snap=>{
+  presenceCache=snap.val()||{};
+  updateOnline();
+  updateTyping();
+ });
+ onValue(ref(db,READS_PATH),snap=>{
+  readCache=snap.val()||{};
+  if(messagesCache)renderMessages(messagesCache);
+ });
 }
 
 function enterChat(){
