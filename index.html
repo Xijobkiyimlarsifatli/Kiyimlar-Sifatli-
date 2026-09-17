@@ -705,6 +705,146 @@ body.dark .chat-item:hover,body.dark .chat-item.active{background:#222638}
 #sendBtn.send-ready svg,#sendBtn.send-ready path{color:#fff!important;stroke:#fff!important}
 #sendBtn.send-ready:active{transform:scale(.94)!important}
 </style>
+
+<style id="header-icons-polished">
+/* Premium, orderly header actions */
+.header-actions{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-end!important;
+  gap:8px!important;
+  padding:0 2px!important;
+}
+.header-actions .icon-btn{
+  width:40px!important;
+  height:40px!important;
+  min-width:40px!important;
+  border-radius:12px!important;
+  border:1px solid rgba(110,100,190,.08)!important;
+  background:linear-gradient(180deg,#f8f8fc,#f0f1f7)!important;
+  color:#697085!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  box-shadow:0 2px 7px rgba(30,30,70,.04)!important;
+  transition:all .18s ease!important;
+}
+.header-actions .icon-btn:hover{
+  transform:translateY(-1px)!important;
+  background:#fff!important;
+  color:#5d4bdc!important;
+  border-color:rgba(93,75,220,.16)!important;
+  box-shadow:0 6px 16px rgba(70,55,170,.10)!important;
+}
+.header-actions .icon-btn:active{transform:scale(.94)!important}
+.header-actions .icon-btn svg{
+  width:19px!important;height:19px!important;
+  stroke-width:1.9!important;
+}
+.header-actions #logoutBtn,
+.header-actions .logout-btn{
+  width:auto!important;
+  min-width:66px!important;
+  padding:0 14px!important;
+  border-radius:12px!important;
+  font-size:12px!important;
+  font-weight:700!important;
+  color:#4e5670!important;
+}
+.header-actions #logoutBtn:hover,
+.header-actions .logout-btn:hover{
+  color:#5946d5!important;
+}
+
+/* Mobile: compact but still evenly spaced */
+@media(max-width:700px){
+  .header-actions{
+    gap:6px!important;
+  }
+  .header-actions .icon-btn{
+    width:38px!important;height:38px!important;min-width:38px!important;
+    border-radius:11px!important;
+  }
+  .header-actions .icon-btn svg{
+    width:18px!important;height:18px!important;
+  }
+  .header-actions #logoutBtn,
+  .header-actions .logout-btn{
+    min-width:62px!important;
+    padding:0 11px!important;
+  }
+}
+</style>
+
+
+<style id="header-icons-aligned-final">
+/* Header actions are anchored to the right of the header, not the viewport edge. */
+.header{
+  position:relative!important;
+}
+.header-actions{
+  margin-left:auto!important;
+  width:max-content!important;
+  flex:0 0 auto!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-end!important;
+  gap:8px!important;
+}
+.header-actions button{
+  flex:0 0 auto!important;
+}
+
+/* Keep every intended header action visible on mobile. */
+@media(max-width:700px){
+  .header{
+    padding:0 10px 0 12px!important;
+    display:flex!important;
+    align-items:center!important;
+  }
+  .header .brand{
+    min-width:0!important;
+    flex:1 1 auto!important;
+    overflow:hidden!important;
+  }
+  .header .brand-title{
+    white-space:nowrap!important;
+  }
+  .header-actions{
+    position:relative!important;
+    right:auto!important;
+    margin-left:auto!important;
+    flex:0 0 auto!important;
+    width:max-content!important;
+    gap:5px!important;
+    z-index:20!important;
+  }
+  .header-actions button,
+  .header-actions .icon-btn{
+    display:inline-flex!important;
+    width:36px!important;
+    min-width:36px!important;
+    height:36px!important;
+    flex:0 0 36px!important;
+    padding:0!important;
+    margin:0!important;
+  }
+  .header-actions #logoutBtn,
+  .header-actions .logout{
+    display:inline-flex!important;
+    width:auto!important;
+    min-width:58px!important;
+    flex:0 0 auto!important;
+    padding:0 10px!important;
+    font-size:11px!important;
+  }
+  /* Undo an older rule that hid the first two actions on mobile. */
+  .header-actions button:nth-child(-n+2){
+    display:inline-flex!important;
+  }
+}
+</style>
+
 </head>
 <body>
 
