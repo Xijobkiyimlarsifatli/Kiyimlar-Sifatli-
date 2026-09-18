@@ -845,7 +845,159 @@ body.dark .chat-item:hover,body.dark .chat-item.active{background:#222638}
 }
 </style>
 
-</head>
+
+<style id="final-layout-repair">
+/* Final layout repair: preserve the original flex structure and prevent mobile overflow. */
+#chatScreen{display:flex;flex-direction:column}
+.toper-main{min-width:0;min-height:0;display:flex;flex-direction:column;flex:1 1 auto}
+
+@media(max-width:700px){
+  #chatScreen{
+    display:flex!important;
+    flex-direction:column!important;
+    width:100%!important;
+    max-width:none!important;
+    height:100dvh!important;
+    min-height:100dvh!important;
+    overflow:hidden!important;
+  }
+  .toper-main{
+    display:flex!important;
+    flex-direction:column!important;
+    width:100%!important;
+    height:100%!important;
+    min-width:0!important;
+    min-height:0!important;
+    flex:1 1 auto!important;
+  }
+  .header{
+    height:60px!important;
+    min-height:60px!important;
+    flex:0 0 60px!important;
+    width:100%!important;
+    padding:0 8px!important;
+    gap:6px!important;
+    overflow:hidden!important;
+  }
+  .header .brand{
+    min-width:0!important;
+    flex:1 1 auto!important;
+    gap:7px!important;
+    overflow:hidden!important;
+  }
+  .header .brand-icon{
+    width:36px!important;height:36px!important;
+    min-width:36px!important;
+    border-radius:11px!important;
+  }
+  .header .brand-title{
+    font-size:15px!important;
+    white-space:nowrap!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+  }
+  .header .status{
+    font-size:8px!important;
+    white-space:nowrap!important;
+  }
+
+  /* Five header icons + logout: compact, aligned, never pushed outside the screen. */
+  .header-actions{
+    flex:0 0 auto!important;
+    width:auto!important;
+    max-width:calc(100% - 125px)!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:flex-end!important;
+    gap:4px!important;
+    margin-left:auto!important;
+    overflow:visible!important;
+  }
+  .header-actions button{
+    width:29px!important;
+    min-width:29px!important;
+    max-width:29px!important;
+    height:34px!important;
+    padding:0!important;
+    margin:0!important;
+    border-radius:10px!important;
+    display:inline-flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+  }
+  .header-actions button svg{
+    width:16px!important;
+    height:16px!important;
+  }
+  .header-actions #logoutBtn,
+  .header-actions .logout{
+    width:49px!important;
+    min-width:49px!important;
+    max-width:49px!important;
+    height:34px!important;
+    padding:0 7px!important;
+    font-size:10px!important;
+    line-height:1!important;
+    white-space:nowrap!important;
+  }
+  .header .logout::before{display:none!important}
+
+  .messages{
+    flex:1 1 auto!important;
+    min-height:0!important;
+    height:auto!important;
+    overflow-x:hidden!important;
+    overflow-y:auto!important;
+    padding:14px 8px 10px!important;
+  }
+  .typing{flex:0 0 22px!important}
+  .composer-wrap{
+    flex:0 0 64px!important;
+    height:64px!important;
+    min-height:64px!important;
+    padding:7px 7px 8px!important;
+  }
+  .composer{
+    width:100%!important;
+    gap:5px!important;
+  }
+  .composer .icon-btn{
+    width:40px!important;
+    min-width:40px!important;
+    height:40px!important;
+    flex:0 0 40px!important;
+  }
+  .message-input{
+    min-width:0!important;
+    width:auto!important;
+    flex:1 1 auto!important;
+    height:40px!important;
+  }
+  #sendBtn{
+    width:40px!important;
+    min-width:40px!important;
+    flex:0 0 40px!important;
+  }
+}
+
+/* Very narrow phones */
+@media(max-width:380px){
+  .header{padding:0 6px!important;gap:4px!important}
+  .header .brand{gap:5px!important}
+  .header .brand-icon{width:34px!important;height:34px!important;min-width:34px!important}
+  .header .brand-title{font-size:14px!important}
+  .header .status{display:none!important}
+  .header-actions{gap:3px!important;max-width:calc(100% - 103px)!important}
+  .header-actions button{width:27px!important;min-width:27px!important;height:32px!important}
+  .header-actions #logoutBtn,.header-actions .logout{
+    width:46px!important;min-width:46px!important;max-width:46px!important;height:32px!important;font-size:9px!important
+  }
+  .composer .icon-btn{width:37px!important;min-width:37px!important}
+  #sendBtn{width:38px!important;min-width:38px!important}
+}
+</style>
+
+\n<style id="toper-mobile-final-polish">\n@media (max-width:700px){\n  :root{--mobile-header:64px;--mobile-nav:66px;--mobile-composer:66px}\n  html,body{width:100%;height:100%;overflow:hidden!important;background:#f5f6fb!important}\n  #chatScreen{position:fixed!important;inset:0!important;width:100%!important;height:100dvh!important;min-height:100dvh!important;max-width:none!important;margin:0!important;background:#f6f7fb!important;display:flex!important;flex-direction:column!important;overflow:hidden!important;box-shadow:none!important}\n  .toper-main{position:relative!important;width:100%!important;height:100%!important;min-width:0!important;min-height:0!important;display:flex!important;flex:1 1 auto!important;flex-direction:column!important;overflow:hidden!important;background:#f7f8fc!important;padding-bottom:var(--mobile-nav)!important}\n  .toper-sidebar,.toper-info{display:none!important}\n\n  .header{position:relative!important;top:auto!important;left:auto!important;right:auto!important;width:100%!important;height:var(--mobile-header)!important;min-height:var(--mobile-header)!important;flex:0 0 var(--mobile-header)!important;padding:0 10px!important;display:flex!important;align-items:center!important;gap:8px!important;background:rgba(255,255,255,.94)!important;border-bottom:1px solid #e9eaf1!important;box-shadow:0 1px 0 rgba(30,35,60,.02),0 5px 18px rgba(35,30,80,.035)!important;z-index:20!important;backdrop-filter:blur(18px)!important}\n  .brand{min-width:0!important;flex:1 1 auto!important;display:flex!important;align-items:center!important;gap:9px!important}\n  .brand-icon{width:40px!important;height:40px!important;min-width:40px!important;border-radius:12px!important;box-shadow:0 6px 16px rgba(91,73,223,.16)!important}\n  .brand-title{font-size:16px!important;line-height:18px!important;font-weight:850!important;letter-spacing:-.35px!important;white-space:nowrap!important}\n  .status{font-size:9px!important;line-height:12px!important;margin-top:1px!important;white-space:nowrap!important}\n  .header-actions{flex:0 0 auto!important;margin-left:auto!important;display:flex!important;align-items:center!important;gap:5px!important;padding:0!important}\n  .header-actions button{width:34px!important;min-width:34px!important;height:34px!important;padding:0!important;border:1px solid #e8eaf2!important;border-radius:10px!important;background:#f5f6fa!important;color:#656c80!important;box-shadow:none!important}\n  .header-actions button:hover{transform:none!important}\n  .header-actions button .icon-svg{width:17px!important;height:17px!important}\n  /* Duplicate actions are already available elsewhere on mobile. Keep the header clean. */\n  #searchToggle,#infoToggle,#clearChatBtn{display:none!important}\n  #themeToggle,#moreToggle,#logoutBtn{display:inline-flex!important;align-items:center!important;justify-content:center!important}\n  #logoutBtn{font-size:0!important;width:34px!important;min-width:34px!important;height:34px!important;padding:0!important}\n  #logoutBtn:before{content:"";display:block;width:17px;height:17px;border:1.8px solid currentColor;border-radius:4px;box-sizing:border-box}\n\n  .messages{position:relative!important;flex:1 1 auto!important;width:100%!important;min-width:0!important;min-height:0!important;height:auto!important;overflow-x:hidden!important;overflow-y:auto!important;padding:14px 9px 10px!important;background:radial-gradient(circle at 50% -10%,rgba(113,96,231,.07),transparent 38%),#f7f8fc!important;scroll-behavior:smooth!important}\n  .messages::-webkit-scrollbar{width:3px}.messages::-webkit-scrollbar-thumb{background:#d9dbe6;border-radius:9px}\n  .empty{padding-top:28vh!important;font-size:13px!important;color:#a0a6b6!important}\n  .msg-row{gap:7px!important;margin-bottom:10px!important}\n  .avatar{width:31px!important;height:31px!important;min-width:31px!important;font-size:11px!important}\n  .bubble{max-width:84%!important;border-radius:16px!important;padding:9px 11px!important;box-shadow:0 5px 18px rgba(35,30,80,.055)!important}\n  .mine .bubble{border-bottom-right-radius:5px!important}.msg-row:not(.mine) .bubble{border-bottom-left-radius:5px!important}\n  .text{font-size:14px!important;line-height:1.42!important}.name{font-size:10px!important}.time{font-size:9px!important;margin-top:4px!important}\n  .photo{max-width:min(74vw,280px)!important;max-height:46vh!important;border-radius:13px!important}\n  .typing{height:20px!important;min-height:20px!important;flex:0 0 20px!important;padding:0 14px!important;font-size:9px!important;background:#f7f8fc!important}\n\n  .composer-wrap{position:relative!important;z-index:21!important;flex:0 0 var(--mobile-composer)!important;height:var(--mobile-composer)!important;min-height:var(--mobile-composer)!important;width:100%!important;padding:7px 8px 8px!important;background:rgba(255,255,255,.96)!important;border-top:1px solid #e8e9f0!important;box-shadow:0 -5px 18px rgba(35,30,80,.035)!important;backdrop-filter:blur(18px)!important}\n  .reply-bar{max-height:0!important;overflow:hidden!important;margin:0!important;padding:0!important}\n  .composer{width:100%!important;max-width:none!important;height:100%!important;display:flex!important;align-items:center!important;gap:5px!important;margin:0!important}\n  .composer .icon-btn{width:39px!important;min-width:39px!important;height:39px!important;flex:0 0 39px!important;border-radius:11px!important;background:#f1f2f7!important;color:#62697b!important;box-shadow:none!important}\n  .composer .icon-btn .icon-svg{width:18px!important;height:18px!important}\n  .message-input{height:39px!important;min-width:0!important;flex:1 1 auto!important;width:auto!important;padding:0 12px!important;border:1px solid #e1e3ec!important;border-radius:13px!important;background:#f8f9fc!important;color:#171827!important;font-size:14px!important;outline:none!important}\n  .message-input:focus{background:#fff!important;border-color:#b9b1f1!important;box-shadow:0 0 0 3px rgba(103,87,232,.09)!important}\n  #sendBtn{width:39px!important;min-width:39px!important;height:39px!important;flex:0 0 39px!important;border-radius:12px!important}\n\n  .emoji-panel,#emojiPanel{position:fixed!important;left:8px!important;right:8px!important;bottom:calc(var(--mobile-nav) + var(--mobile-composer) + 7px)!important;width:auto!important;max-width:none!important;max-height:min(300px,42dvh)!important;overflow:auto!important;padding:10px!important;border-radius:18px!important;z-index:100!important;box-shadow:0 16px 45px rgba(24,22,60,.18)!important}\n  #emojiPanel .emoji-grid{grid-template-columns:repeat(7,minmax(0,1fr))!important;gap:4px!important}\n  #emojiPanel button,#emojiPanel .emoji{height:40px!important;font-size:24px!important}\n\n  .mobile-nav{position:fixed!important;display:grid!important;grid-template-columns:repeat(4,1fr)!important;left:0!important;right:0!important;bottom:0!important;width:100%!important;height:var(--mobile-nav)!important;min-height:var(--mobile-nav)!important;padding:5px 8px max(5px,env(safe-area-inset-bottom))!important;background:rgba(255,255,255,.97)!important;border-top:1px solid #e6e8ef!important;box-shadow:0 -8px 24px rgba(30,28,70,.055)!important;z-index:60!important;backdrop-filter:blur(18px)!important}\n  .mobile-nav button{min-width:0!important;height:52px!important;border:0!important;border-radius:13px!important;background:transparent!important;color:#858b9e!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:2px!important;font-size:9px!important;font-weight:650!important}\n  .mobile-nav button.active{color:#5d4bd8!important;background:#f0eefc!important;font-weight:800!important}\n  .mobile-nav .icon-svg{width:19px!important;height:19px!important}\n}\n@media(max-width:380px){\n .header{padding:0 7px!important}.brand{gap:7px!important}.brand-icon{width:37px!important;height:37px!important;min-width:37px!important}.brand-title{font-size:15px!important}.status{display:none!important}\n .header-actions{gap:3px!important}.header-actions button,#logoutBtn{width:31px!important;min-width:31px!important;height:31px!important}.header-actions button .icon-svg{width:16px!important;height:16px!important}\n .composer .icon-btn,#sendBtn{width:37px!important;min-width:37px!important;height:37px!important}.message-input{height:37px!important;font-size:13px!important}\n}\n</style>\n</head>
 <body>
 
 
